@@ -91,7 +91,7 @@ To build BifrostShell, run the following commands:
 
 mkdir build
 cd build
-cmake ..
+cmake ../src
 make
 
 ## Configuration
