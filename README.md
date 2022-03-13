@@ -1,15 +1,20 @@
-# BifrostShell - A fork of the LiquidShell
+# BifrostShell - A fork of LiquidShell
 
 Forked by: Gary Greene, `greeneg at altimatos.com`
 Liquidshell Author: Martin Koller, `kollix at aon.at`
 
 ## Introduction
 
-BifrostShell is a fork with major UX changes from it's parent, `liquidshell`.
+BifrostShell is a fork with major UX changes from it's parent, [liquidshell](https://github.com/KDE/liquidshell). It retains the goal of `liquidshell` to be a basic Desktop Shell implemented using only QtWidgets.
 
-It retains the goal of `liquidshell` to be a basic Desktop Shell implemented using only QtWidgets.
+The main changes:
+- UI changes to the panel to be more similar aesthetically and functionality to KDE3's kicker
+- Add desktop icon support
+- Extend the wallpaper settings to allow for either per desktop or same on all desktop spaces
+- Replace use of krunner with a dialog that more closely resembles KDE3's krun dialog
 
 Main Features:
+
 - Wallpaper per virtual desktop
 - Weather, Disk Usage, Picture Frame Applets (per virtual desktop or on all)
 - No animations, low memory and CPU footprint
