@@ -89,10 +89,12 @@ Additionally, the following are recommeneded to allow BifrostShell to work bette
 
 To build BifrostShell, run the following commands:
 
+```sh
 mkdir build
 cd build
 cmake ../src
 make
+```
 
 ## Configuration
 
