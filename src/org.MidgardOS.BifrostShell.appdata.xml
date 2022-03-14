@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop">
+  <id>org.MidgardOS.BifrostShell.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license> GPL-3.0 </project_license>
+  <name>BifrostShell</name>
+  <name xml:lang="en-GB">BifrostShell</name>
+  <summary> BifrostShell is an alternative to plasmashell </summary>
+  <summary xml:lang="en-GB">BifrostShell is an alternative to plasmashell</summary>
+  <description>
+    <p>BifrostShell is an alternative to plasmashell</p>
+    <p xml:lang="en-GB">BifrostShell is an alternative to plasmashell</p>
+    <p>It does not use QtQuick but instead relies on QtWidgets, therefore no hardware graphics acceleration is needed.</p>
+    <p xml:lang="en-GB">It does not use QtQuick but instead relies on QtWidgets, therefore no hardware graphics acceleration is needed.</p>
+    <p>Main Features:</p>
+    <p xml:lang="en-GB">Main Features:</p>
+    <ul>
+      <li>Wallpaper per virtual desktop</li>
+      <li xml:lang="en-GB">Wallpaper per virtual desktop</li>
+      <li>No animations, no CPU hogging, low Memory footprint</li>
+      <li xml:lang="en-GB">No animations, no CPU hogging, low Memory footprint</li>
+      <li>Instant startup</li>
+      <li xml:lang="en-GB">Instant startup</li>
+      <li>No use of activities</li>
+      <li xml:lang="en-GB">No use of activities</li>
+      <li>QtWidgets based, therefore follows widget style from systemsettings</li>
+      <li xml:lang="en-GB">QtWidgets based, therefore follows widget style from systemsettings</li>
+      <li>Icons are used from your globally defined icon theme from systemsettings</li>
+      <li xml:lang="en-GB">Icons are used from your globally defined icon theme from systemsettings</li>
+      <li>Colors are used from your globally defined color theme from systemsettings</li>
+      <li xml:lang="en-GB">Colours are used from your globally defined colour theme from systemsettings</li>
+      <li>Can additionally be styled with css by passing the commandline option -stylesheet filename.css (see included example stylesheet.css)</li>
+      <li xml:lang="en-GB">Can additionally be styled with css by passing the commandline option -stylesheet filename.css (see included example stylesheet.css)</li>
+      <li>uses existing KDE dialogs for most configurations, e.g. StartMenu, Virtual Desktops, Bluetooth, Network</li>
+      <li xml:lang="en-GB">uses existing KDE dialogues for most configurations, e.g. StartMenu, Virtual Desktops, Bluetooth, Network</li>
+      <li>One bottom DesktopPanel</li>
+      <li xml:lang="en-GB">One bottom DesktopPanel</li>
+      <li>Desktop Applets</li>
+      <li xml:lang="en-GB">Desktop Applets</li>
+    </ul>
+  </description>
+  <url type="homepage">https://www.yggdrasilsoft.org/BifrostShell</url>
+  <url type="bugtracker">https://github.com/MigardOS/BifrostShell/issues</url>
+  <!-- <url type="donation">https://www.kde.org/community/donations/?app=BifrostShell</url> -->
+  <!-- <screenshots>
+    <screenshot type="default">
+      <image> https://cdn.kde.org/screenshots/BifrostShell/BifrostShell-light.png </image>
+    </screenshot>
+  </screenshots> -->
+  <provides>
+    <binary>BifrostShell</binary>
+  </provides>
+  <project_group>MidgardOS</project_group>
+  <releases>
+    <release type="stable" version="0.1" date="2022-04-01T00:00:00Z">
+      <description>
+        <ul>
+          <li>Application Fork</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>
