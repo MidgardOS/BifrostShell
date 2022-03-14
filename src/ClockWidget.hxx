@@ -28,49 +28,45 @@
 
 #include <DesktopPanel.hxx>
 
-class CalendarPopup : public QFrame
-{
-  Q_OBJECT
+class CalendarPopup : public QFrame {
+    Q_OBJECT
 
-  public:
-    CalendarPopup(QWidget *parent);
+    public:
+        CalendarPopup(QWidget *parent);
 
-  public Q_SLOTS:
-    void goToday();
+    public Q_SLOTS:
+        void goToday();
 
-  private:
-    QCalendarWidget *cal;
+    private:
+        QCalendarWidget *cal;
 };
 
-//--------------------------------------------------------------------------------
+class ClockWidget : public QFrame {
+    Q_OBJECT
+    Q_PROPERTY(QString timeFormat MEMBER timeFormat)
+    Q_PROPERTY(QString dayFormat  MEMBER dayFormat)
+    Q_PROPERTY(QString dateFormat MEMBER dateFormat)
 
-class ClockWidget : public QFrame
-{
-  Q_OBJECT
-  Q_PROPERTY(QString timeFormat MEMBER timeFormat)
-  Q_PROPERTY(QString dayFormat  MEMBER dayFormat)
-  Q_PROPERTY(QString dateFormat MEMBER dateFormat)
+    public:
+        ClockWidget(DesktopPanel *parent);
 
-  public:
-    ClockWidget(DesktopPanel *parent);
+    protected:
+        void mousePressEvent(QMouseEvent *event) override;
 
-  protected:
-    void mousePressEvent(QMouseEvent *event) override;
+    private Q_SLOTS:
+        void fill();
+        void tick();
 
-  private Q_SLOTS:
-    void fill();
-    void tick();
+    private:
+        QTimer *timer;
+        QLabel *timeLabel, *dayLabel, *dateLabel;
+        CalendarPopup *calendar;
 
-  private:
-    QTimer *timer;
-    QLabel *timeLabel, *dayLabel, *dateLabel;
-    CalendarPopup *calendar;
+        QString timeFormat = QStringLiteral("HH:mm");
+        QString dayFormat  = QStringLiteral("ddd");
+        QString dateFormat = QStringLiteral("d.MMM yyyy");
 
-    QString timeFormat = QStringLiteral("HH:mm");
-    QString dayFormat  = QStringLiteral("ddd");
-    QString dateFormat = QStringLiteral("d.MMM yyyy");
-
-    QVector<QByteArray> timeZoneIds;
+        QVector<QByteArray> timeZoneIds;
 };
 
 #endif
