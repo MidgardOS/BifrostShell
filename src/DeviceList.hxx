@@ -2,20 +2,20 @@
 /*
   Copyright 2017 - 2020 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef _DeviceList_H_
@@ -40,42 +40,36 @@
 
 //--------------------------------------------------------------------------------
 
-struct DeviceAction
-{
-  DeviceAction() { }
-  DeviceAction(const QString &filePath, Solid::Predicate p, KServiceAction a)
-    : path(filePath), predicate(p), action(a) { }
-
-  QString path;
-  Solid::Predicate predicate;
-  KServiceAction action;
+struct DeviceAction {
+    DeviceAction() { }
+    DeviceAction(const QString &filePath, Solid::Predicate p, KServiceAction a) : path(filePath), predicate(p), action(a) { }
+    QString path;
+    Solid::Predicate predicate;
+    KServiceAction action;
 };
 
 //--------------------------------------------------------------------------------
 
-class DeviceItem : public QFrame
-{
-  Q_OBJECT
+class DeviceItem : public QFrame {
+    Q_OBJECT
 
-  public:
+    public:
     DeviceItem(Solid::Device dev, const QVector<DeviceAction> &deviceActions);
     DeviceItem(const KdeConnect::Device &dev);
-
     void markAsNew();
 
-  private:
+    private:
     static QString errorToString(Solid::ErrorType error);
     void fillData();
     void kdeConnectDeviceChanged(const KdeConnect::Device &dev);
-
     enum Action { Mount, Unmount };
     void mountDone(Action action, Solid::ErrorType error, QVariant errorData, const QString &udi);
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void teardownDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
     void setupDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
 
-  private:
+    private:
     Solid::Device device;
     QToolButton *mountButton = nullptr;
     QLabel *textLabel = nullptr, *statusLabel = nullptr, *newFlagLabel = nullptr;
@@ -88,35 +82,31 @@ class DeviceItem : public QFrame
 
 //--------------------------------------------------------------------------------
 
-class DeviceList : public QScrollArea
-{
-  Q_OBJECT
+class DeviceList : public QScrollArea {
+    Q_OBJECT
 
-  public:
+    public:
     DeviceList(QWidget *parent);
-
     bool isEmpty() const { return items.isEmpty(); }
-
     QSize sizeHint() const override;
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void deviceWasAdded();
     void deviceWasRemoved();
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void deviceAdded(const QString &dev);
     void deviceRemoved(const QString &dev);
     void kdeConnectDeviceAdded(const KdeConnect::Device &dev);
 
-  private:
+    private:
     void loadActions();
     DeviceItem *addDevice(Solid::Device device);
 
-  private:
+    private:
     QVBoxLayout *vbox;
     QMap<QString, DeviceItem *> items;
     Solid::Predicate predicate;
-
     QVector<DeviceAction> actions;
     KdeConnect kdeConnect;
 };

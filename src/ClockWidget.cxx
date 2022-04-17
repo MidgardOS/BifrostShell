@@ -2,20 +2,20 @@
 /*
   Copyright 2017 - 2020 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <ClockWidget.hxx>
@@ -91,10 +91,10 @@ ClockWidget::ClockWidget(DesktopPanel *parent) : QFrame(parent), calendar(nullpt
     dayLabel->setAlignment(Qt::AlignCenter);
     dateLabel->setAlignment(Qt::AlignCenter);
 
-    QFont f = font();
-    f.setPointSizeF(fontInfo().pointSizeF() * 1.5);
-    f.setBold(true);
-    timeLabel->setFont(f);
+    QFont _font = font();
+    _font.setPointSizeF(fontInfo().pointSizeF() * 1.5);
+    _font.setBold(true);
+    timeLabel->setFont(_font);
 
     fill();
 
@@ -107,35 +107,39 @@ ClockWidget::ClockWidget(DesktopPanel *parent) : QFrame(parent), calendar(nullpt
     action->setIcon(QIcon::fromTheme("configure"));
     action->setText(i18n("Select Timezones..."));
     addAction(action);
-    connect(action, &QAction::triggered, [this]() {
-        ClockWidgetConfigureDialog dialog(parentWidget(), timeZoneIds);
-        dialog.setWindowTitle(i18n("Select Timezones"));
-        dialog.resize(600, 400);
-        if (dialog.exec() == QDialog::Accepted) {
-            timeZoneIds = dialog.getSelectedTimeZoneIds();
-            KConfig config;
-            KConfigGroup group = config.group("ClockWidget");
-            QStringList list;
-            for (const QByteArray &id : timeZoneIds) {
-                list.append(id);
+    connect(action, &QAction::triggered,
+        [this]() {
+            ClockWidgetConfigureDialog dialog(parentWidget(), timeZoneIds);
+            dialog.setWindowTitle(i18n("Select Timezones"));
+            dialog.resize(600, 400);
+            if (dialog.exec() == QDialog::Accepted) {
+                timeZoneIds = dialog.getSelectedTimeZoneIds();
+                KConfig config;
+                KConfigGroup group = config.group("ClockWidget");
+                QStringList list;
+                for (const QByteArray &id : timeZoneIds) {
+                    list.append(id);
+                }
+                group.writeEntry("timeZoneIds", list);
+                tick();  // update tooltip
             }
-            group.writeEntry("timeZoneIds", list);
-            tick();  // update tooltip
         }
-    });
+    );
 
     action = new QAction(this);
     action->setIcon(QIcon::fromTheme("preferences-system-time"));
     action->setText(i18n("Configure Date & Time..."));
     addAction(action);
-    connect(action, &QAction::triggered, [this]() {
-        auto dialog = new KCMultiDialog(parentWidget());
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
-        dialog->setWindowTitle(i18n("Date & Time"));
-        dialog->addModule("clock");
-        dialog->adjustSize();
-        dialog->show();
-    });
+    connect(action, &QAction::triggered,
+        [this]() {
+            auto dialog = new KCMultiDialog(parentWidget());
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            dialog->setWindowTitle(i18n("Date & Time"));
+            dialog->addModule("clock");
+            dialog->adjustSize();
+            dialog->show();
+        }
+    );
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
     // load config
@@ -160,7 +164,7 @@ void ClockWidget::fill() {
     const int MAX_ROWS = qobject_cast<DesktopPanel *>(parentWidget())->getRows();
 
     QBoxLayout *box;
-    if (MAX_ROWS = 1) {
+    if (MAX_ROWS == 1) {
         box = new QVBoxLayout(this);
         box->setSpacing(0);
     } else {

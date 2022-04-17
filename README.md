@@ -1,14 +1,15 @@
-# BifrostShell - A fork of LiquidShell
+# BifrostShell - A fork of liquidshell
 
 Forked by: Gary Greene, `greeneg at altimatos.com`
-Liquidshell Author: Martin Koller, `kollix at aon.at`
+liquidshell Author: Martin Koller, `kollix at aon.at`
 
 ## Introduction
 
-BifrostShell is a fork with major UX changes from it's parent, [liquidshell](https://github.com/KDE/liquidshell). It retains the goal of `liquidshell` to be a basic Desktop Shell implemented using only QtWidgets.
+BifrostShell is a fork with major UX changes from it's parent, [liquidshell](https://github.com/KDE/liquidshell). It retains the goal of `BifrostShell` to be a basic Desktop Shell implemented using only QtWidgets.
 
 The main changes:
 - UI changes to the panel to be more similar aesthetically and functionality to KDE3's kicker
+- Redesign the launch menu to mimic more of the UI of Plasma5's new Kickoff menu
 - Add desktop icon support
 - Extend the wallpaper settings to allow for either per desktop or same on all desktop spaces
 - Replace use of krunner with a dialog that more closely resembles KDE3's krun dialog
@@ -104,7 +105,7 @@ For details about the syntax and possible options see the [Qt5 documentation](ht
 
 ---
 
-To explicitly disable the Software-Updater (packagekit based), set the `~/.config/liquidshellrc` config file entry:
+To explicitly disable the Software-Updater (packagekit based), set the `~/.config/BifrostShellrc` config file entry:
 
 ```ini
 [SoftwareUpdates]
@@ -115,7 +116,7 @@ The config file and a default entry will be created at first run of BifrostShell
 
 ---
 
-To explicitly disable icons shown on the Pager buttons, set the `~/.config/liquidshellrc` config file entry:
+To explicitly disable icons shown on the Pager buttons, set the `~/.config/BifrostShellrc` config file entry:
 
 ```ini
 [Pager]

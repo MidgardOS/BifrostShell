@@ -2,20 +2,20 @@
 /*
   Copyright 2017, 2018 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <PagerButton.hxx>
@@ -67,7 +67,7 @@ PagerButton::PagerButton(int num, DesktopPanel *p, bool doShowIcon)
 
     // when an application changes its icon very often very fast (windowChanged called)
     // (e.g. davmail when no network connection available)
-    // let's avoid that liquidshell uses 100% CPU
+    // let's avoid that BifrostShell uses 100% CPU
     pixmapTimer.setSingleShot(true);
     pixmapTimer.setInterval(300);
     connect(&pixmapTimer, &QTimer::timeout, this, &PagerButton::createPixmap);

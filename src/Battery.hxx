@@ -2,20 +2,20 @@
 /*
   Copyright 2017 -2020 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef _Battery_H_
@@ -27,27 +27,25 @@
 #include <KCMultiDialog>
 class QDBusMessage;
 
-class Battery : public SysTrayItem
-{
-  Q_OBJECT
+class Battery : public SysTrayItem {
+    Q_OBJECT
 
-  public:
+    public:
     Battery(QWidget *parent);
-
     static QIcon getStatusIcon(int charge, bool isCharging);
 
-  protected:
+    protected:
     QWidget *getDetailsList() override;
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void onBatteryReply(const QDBusMessage &msg);
     void upowerPropertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidated);
     void changed();
 
-  private:
+    private:
     QString secsToHM(int secs) const;
 
-  private:
+    private:
     Solid::Device device;
     bool onBattery = false;
     QPointer<KCMultiDialog> dialog;

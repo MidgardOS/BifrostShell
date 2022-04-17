@@ -2,20 +2,20 @@
 /*
   Copyright 2017 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <Bluetooth.hxx>
@@ -30,84 +30,74 @@
 
 //--------------------------------------------------------------------------------
 
-Bluetooth::Bluetooth(QWidget *parent)
-  : SysTrayItem(parent)
-{
-  manager = new BluezQt::Manager(this);
-  job = manager->init();
-  job->start();
-  connect(job, &BluezQt::InitManagerJob::result, this, &Bluetooth::changed);
+Bluetooth::Bluetooth(QWidget *parent) : SysTrayItem(parent) {
+    manager = new BluezQt::Manager(this);
+    job = manager->init();
+    job->start();
+    connect(job, &BluezQt::InitManagerJob::result, this, &Bluetooth::changed);
 
-  connect(manager, &BluezQt::Manager::adapterAdded, this, &Bluetooth::changed);
-  connect(manager, &BluezQt::Manager::adapterRemoved, this, &Bluetooth::changed);
-  connect(manager, &BluezQt::Manager::allAdaptersRemoved, this, &Bluetooth::changed);
-  connect(manager, &BluezQt::Manager::bluetoothOperationalChanged, this, &Bluetooth::changed);
-  connect(manager, &BluezQt::Manager::operationalChanged, this, &Bluetooth::changed);
+    connect(manager, &BluezQt::Manager::adapterAdded, this, &Bluetooth::changed);
+    connect(manager, &BluezQt::Manager::adapterRemoved, this, &Bluetooth::changed);
+    connect(manager, &BluezQt::Manager::allAdaptersRemoved, this, &Bluetooth::changed);
+    connect(manager, &BluezQt::Manager::bluetoothOperationalChanged, this, &Bluetooth::changed);
+    connect(manager, &BluezQt::Manager::operationalChanged, this, &Bluetooth::changed);
 
-  connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &Bluetooth::changed);
+    connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &Bluetooth::changed);
 }
 
 //--------------------------------------------------------------------------------
 
-Bluetooth::~Bluetooth()
-{
-  if ( job )
-    job->kill();
+Bluetooth::~Bluetooth() {
+    if (job) {
+        job->kill();
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void Bluetooth::changed()
-{
-  job = nullptr;
+void Bluetooth::changed() {
+    job = nullptr;
 
-  if ( manager->adapters().isEmpty() || !manager->isOperational() )
-  {
-    hide();  // no BT
-    return;
-  }
-
-  show();
-
-  if ( manager->isBluetoothOperational() )
-  {
-    setPixmap(QIcon::fromTheme("preferences-system-bluetooth.png").pixmap(size()));
-    setToolTip(i18n("Bluetooth is operational"));
-  }
-  else
-  {
-    setPixmap(QIcon::fromTheme("preferences-system-bluetooth-inactive.png").pixmap(size()));
-    setToolTip(i18n("Bluetooth is not operational"));
-  }
-}
-
-//--------------------------------------------------------------------------------
-
-QWidget *Bluetooth::getDetailsList()
-{
-  if ( !dialog )
-  {
-    dialog = new KCMultiDialog(this);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-
-    // different KDE versions need different ways ...
-    KPluginMetaData module("plasma/kcms/systemsettings/kcm_bluetooth");
-    if ( !module.name().isEmpty() )
-      dialog->addModule(module);
-    else if ( KCModuleInfo("bluetooth").service() )
-      dialog->addModule("bluetooth");
-    else  // older KDE versions
-    {
-      dialog->addModule("bluedevilglobal");
-      dialog->addModule("bluedeviladapters");
-      dialog->addModule("bluedevildevices");
+    if (manager->adapters().isEmpty() || !manager->isOperational()) {
+        hide();  // no BT
+        return;
     }
 
-    dialog->adjustSize();
-    dialog->setWindowTitle(i18n("Bluetooth"));
-  }
+    show();
 
-  return dialog;
+    if (manager->isBluetoothOperational()) {
+        setPixmap(QIcon::fromTheme("preferences-system-bluetooth.png").pixmap(size()));
+        setToolTip(i18n("Bluetooth is operational"));
+    } else {
+        setPixmap(QIcon::fromTheme("preferences-system-bluetooth-inactive.png").pixmap(size()));
+        setToolTip(i18n("Bluetooth is not operational"));
+    }
+}
+
+//--------------------------------------------------------------------------------
+
+QWidget *Bluetooth::getDetailsList() {
+    if (! dialog) {
+        dialog = new KCMultiDialog(this);
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+        // different KDE versions need different ways ...
+        KPluginMetaData module("plasma/kcms/systemsettings/kcm_bluetooth");
+        if (! module.name().isEmpty()) {
+            dialog->addModule(module);
+        } else if (KCModuleInfo("bluetooth").service()) {
+            dialog->addModule("bluetooth");
+        } else { // older KDE versions
+            dialog->addModule("bluedevilglobal");
+            dialog->addModule("bluedeviladapters");
+            dialog->addModule("bluedevildevices");
+        }
+
+        dialog->adjustSize();
+        dialog->setWindowTitle(i18n("Bluetooth"));
+    }
+
+    return dialog;
 }
 
 //--------------------------------------------------------------------------------

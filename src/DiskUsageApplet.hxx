@@ -2,20 +2,20 @@
 /*
   Copyright 2017 - 2020 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef _DiskUsageApplet_H_
@@ -26,36 +26,32 @@
 #include <QTimer>
 #include <QMap>
 #include <QPointer>
+
 class QProgressBar;
 class QLabel;
 
-class DiskUsageApplet : public DesktopApplet
-{
-  Q_OBJECT
+class DiskUsageApplet : public DesktopApplet {
+    Q_OBJECT
 
-  public:
+    public:
     DiskUsageApplet(QWidget *parent, const QString &theId);
-
     void loadConfig() override;
 
-  public Q_SLOTS:
+    public Q_SLOTS:
     void configure() override;
     void saveConfig() override;
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void fill();
 
-  private:
+    private:
     QTimer timer;
-
-    struct SizeInfo
-    {
-      QLabel *label;
-      QProgressBar *progress;
-      QLabel *sizeLabel;
-      bool used;
+    struct SizeInfo {
+        QLabel *label;
+        QProgressBar *progress;
+        QLabel *sizeLabel;
+        bool used;
     };
-
     QMap<QString, SizeInfo> partitionMap;
     QPointer<DiskUsageAppletConfigureDialog> dialog;
 };

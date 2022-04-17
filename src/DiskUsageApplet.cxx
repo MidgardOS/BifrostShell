@@ -2,20 +2,20 @@
 /*
   Copyright 2017 - 2020 Martin Koller, kollix@aon.at
 
-  This file is part of liquidshell.
+  This file is part of BifrostShell.
 
-  liquidshell is free software: you can redistribute it and/or modify
+  BifrostShell is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  liquidshell is distributed in the hope that it will be useful,
+  BifrostShell is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with liquidshell.  If not, see <http://www.gnu.org/licenses/>.
+  along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <DiskUsageApplet.hxx>
@@ -40,173 +40,157 @@
 
 //--------------------------------------------------------------------------------
 
-DiskUsageApplet::DiskUsageApplet(QWidget *parent, const QString &theId)
-  : DesktopApplet(parent, theId)
-{
-  setAutoFillBackground(true);
+DiskUsageApplet::DiskUsageApplet(QWidget *parent, const QString &theId) : DesktopApplet(parent, theId) {
+    setAutoFillBackground(true);
 
-  connect(&timer, &QTimer::timeout, this, &DiskUsageApplet::fill);
-  timer.setInterval(10000);
-  timer.start();
+    connect(&timer, &QTimer::timeout, this, &DiskUsageApplet::fill);
+    timer.setInterval(10000);
+    timer.start();
 
-  new QGridLayout(this);
-  fill();
+    new QGridLayout(this);
+    fill();
 
-  // beside cyclic update, react immediately when a device is added/removed
-  connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
-          this, &DiskUsageApplet::fill);
-
-  connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
-          this, &DiskUsageApplet::fill);
+    // beside cyclic update, react immediately when a device is added/removed
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, this, &DiskUsageApplet::fill);
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved, this, &DiskUsageApplet::fill);
 }
 
 //--------------------------------------------------------------------------------
 
-void DiskUsageApplet::fill()
-{
-  QGridLayout *grid = static_cast<QGridLayout *>(layout());
+void DiskUsageApplet::fill() {
+    QGridLayout *grid = static_cast<QGridLayout *>(layout());
 
-  for (SizeInfo &info : partitionMap)
-    info.used = false;
-
-  QList<Solid::Device> partitions = Solid::Device::listFromType(Solid::DeviceInterface::StorageVolume);
-
-  int row = grid->rowCount();
-  for (const Solid::Device &partition : partitions)
-  {
-    const Solid::StorageVolume *volume = partition.as<Solid::StorageVolume>();
-    if ( !volume || volume->isIgnored() ||
-         (volume->usage() != Solid::StorageVolume::FileSystem) )
-      continue;
-
-    const Solid::StorageAccess *storage = partition.as<Solid::StorageAccess>();
-    if ( !storage )
-      continue;
-
-    if ( !storage->isAccessible() )
-    {
-      connect(storage, &Solid::StorageAccess::setupDone, this, &DiskUsageApplet::fill, Qt::UniqueConnection);
-      continue;
+    for (SizeInfo &info : partitionMap) {
+        info.used = false;
     }
 
-    QProgressBar *progress;
-    QLabel *sizeLabel;
+    QList<Solid::Device> partitions = Solid::Device::listFromType(Solid::DeviceInterface::StorageVolume);
 
-    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(storage->filePath());
+    int row = grid->rowCount();
+    for (const Solid::Device &partition : partitions) {
+        const Solid::StorageVolume *volume = partition.as<Solid::StorageVolume>();
+        if (! volume || volume->isIgnored() || (volume->usage() != Solid::StorageVolume::FileSystem)) {
+            continue;
+        }
+        const Solid::StorageAccess *storage = partition.as<Solid::StorageAccess>();
+        if (! storage ) {
+            continue;
+        }
+        if (! storage->isAccessible() ) {
+            connect(storage, &Solid::StorageAccess::setupDone, this, &DiskUsageApplet::fill, Qt::UniqueConnection);
+            continue;
+        }
 
-    //qDebug() << "mount" << info.mountPoint() << "path" << storage->filePath()
-    //         << "valid" << info.isValid() << "size" << info.size() << "used" << info.used()
-    //         << "readable" << QFileInfo(storage->filePath()).isReadable();
+        QProgressBar *progress;
+        QLabel *sizeLabel;
 
-    if ( !info.isValid() || (info.size() == 0) || !QFileInfo(storage->filePath()).isReadable() )
-      continue;
+        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(storage->filePath());
 
-    QString key = storage->filePath();
+        //qDebug() << "mount" << info.mountPoint() << "path" << storage->filePath()
+        //         << "valid" << info.isValid() << "size" << info.size() << "used" << info.used()
+        //         << "readable" << QFileInfo(storage->filePath()).isReadable();
 
-    if ( !partitionMap.contains(key) )
-    {
-      progress = new QProgressBar(this);
+        if (! info.isValid() || (info.size() == 0) || !QFileInfo(storage->filePath()).isReadable()) {
+            continue;
+        }
 
-      QLabel *label = new QLabel(storage->filePath(), this);
-      grid->addWidget(label, row, 0);
-      grid->addWidget(progress, row, 1);
-      grid->addWidget(sizeLabel = new QLabel(this), row, 2);
+        QString key = storage->filePath();
 
-      row++;
+        if (! partitionMap.contains(key)) {
+            progress = new QProgressBar(this);
 
-      SizeInfo sizeInfo;
-      sizeInfo.label = label;
-      sizeInfo.progress = progress;
-      sizeInfo.sizeLabel = sizeLabel;
-      sizeInfo.used = true;
-      partitionMap.insert(key, sizeInfo);
+            QLabel *label = new QLabel(storage->filePath(), this);
+            grid->addWidget(label, row, 0);
+            grid->addWidget(progress, row, 1);
+            grid->addWidget(sizeLabel = new QLabel(this), row, 2);
 
-      // workaround Qt bug
-      label->setPalette(palette());
-      sizeLabel->setPalette(palette());
-      progress->setPalette(palette());
+            row++;
 
-      connect(storage, &Solid::StorageAccess::teardownDone, this, &DiskUsageApplet::fill, Qt::UniqueConnection);
+            SizeInfo sizeInfo;
+            sizeInfo.label = label;
+            sizeInfo.progress = progress;
+            sizeInfo.sizeLabel = sizeLabel;
+            sizeInfo.used = true;
+            partitionMap.insert(key, sizeInfo);
+
+            // workaround Qt bug
+            label->setPalette(palette());
+            sizeLabel->setPalette(palette());
+            progress->setPalette(palette());
+
+            connect(storage, &Solid::StorageAccess::teardownDone, this, &DiskUsageApplet::fill, Qt::UniqueConnection);
+        } else {
+            partitionMap[key].used = true;
+            SizeInfo sizeInfo = partitionMap[key];
+            progress = sizeInfo.progress;
+            sizeLabel = sizeInfo.sizeLabel;
+        }
+
+        progress->setValue(std::round(double(info.used()) / double(info.size()) * 100.0));
+
+        sizeLabel->setText(
+            i18n("%1 free / %2", KIO::convertSize(info.available()), KIO::convertSize(info.size()))
+        );
     }
-    else
-    {
-      partitionMap[key].used = true;
-      SizeInfo sizeInfo = partitionMap[key];
-      progress = sizeInfo.progress;
-      sizeLabel = sizeInfo.sizeLabel;
+
+    // remove entries which are no longer used
+    QMutableMapIterator<QString, SizeInfo> iter(partitionMap);
+    while (iter.hasNext()) {
+        iter.next();
+        if (! iter.value().used) {
+            delete iter.value().label;
+            delete iter.value().progress;
+            delete iter.value().sizeLabel;
+
+            iter.remove();
+        }
     }
-
-    progress->setValue(std::round(double(info.used()) / double(info.size()) * 100.0));
-
-    sizeLabel->setText(i18n("%1 free / %2",
-                            KIO::convertSize(info.available()),
-                            KIO::convertSize(info.size())));
-  }
-
-  // remove entries which are no longer used
-  QMutableMapIterator<QString, SizeInfo> iter(partitionMap);
-  while ( iter.hasNext() )
-  {
-    iter.next();
-    if ( !iter.value().used )
-    {
-      delete iter.value().label;
-      delete iter.value().progress;
-      delete iter.value().sizeLabel;
-
-      iter.remove();
-    }
-  }
 }
 
 //--------------------------------------------------------------------------------
 
-void DiskUsageApplet::configure()
-{
-  if ( dialog )
-  {
-    dialog->raise();
-    dialog->activateWindow();
-    return;
-  }
+void DiskUsageApplet::configure() {
+    if (dialog ) {
+        dialog->raise();
+        dialog->activateWindow();
+        return;
+    }
 
-  dialog = new DiskUsageAppletConfigureDialog(this);
-  dialog->setWindowTitle(i18n("Configure DiskUsage Applet"));
+    dialog = new DiskUsageAppletConfigureDialog(this);
+    dialog->setWindowTitle(i18n("Configure DiskUsage Applet"));
 
-  dialog->setAttribute(Qt::WA_DeleteOnClose);
-  dialog->show();
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 
-  connect(dialog.data(), &QDialog::accepted, this, &DiskUsageApplet::saveConfig);
+    connect(dialog.data(), &QDialog::accepted, this, &DiskUsageApplet::saveConfig);
 }
 
 //--------------------------------------------------------------------------------
 
-void DiskUsageApplet::loadConfig()
-{
-  DesktopApplet::loadConfig();
+void DiskUsageApplet::loadConfig() {
+    DesktopApplet::loadConfig();
 
-  KConfig config;
-  KConfigGroup group = config.group(id);
+    KConfig config;
+    KConfigGroup group = config.group(id);
 
-  QColor barTextCol = group.readEntry("barTextCol", palette().color(QPalette::HighlightedText));
-  QColor barBackCol = group.readEntry("barBackCol", palette().color(QPalette::Highlight));
+    QColor barTextCol = group.readEntry("barTextCol", palette().color(QPalette::HighlightedText));
+    QColor barBackCol = group.readEntry("barBackCol", palette().color(QPalette::Highlight));
 
-  QPalette pal = palette();
-  pal.setColor(QPalette::HighlightedText, barTextCol);
-  pal.setColor(QPalette::Highlight, barBackCol);
-  setPalette(pal);
+    QPalette pal = palette();
+    pal.setColor(QPalette::HighlightedText, barTextCol);
+    pal.setColor(QPalette::Highlight, barBackCol);
+    setPalette(pal);
 }
 
 //--------------------------------------------------------------------------------
 
-void DiskUsageApplet::saveConfig()
-{
-  DesktopApplet::saveConfig();
+void DiskUsageApplet::saveConfig() {
+    DesktopApplet::saveConfig();
 
-  KConfig config;
-  KConfigGroup group = config.group(id);
-  group.writeEntry("barTextCol", palette().color(QPalette::HighlightedText));
-  group.writeEntry("barBackCol", palette().color(QPalette::Highlight));
+    KConfig config;
+    KConfigGroup group = config.group(id);
+    group.writeEntry("barTextCol", palette().color(QPalette::HighlightedText));
+    group.writeEntry("barBackCol", palette().color(QPalette::Highlight));
 }
 
 //--------------------------------------------------------------------------------
