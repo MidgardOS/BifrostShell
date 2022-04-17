@@ -27,24 +27,22 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
-class NetworkList : public QFrame
-{
-  Q_OBJECT
+class NetworkList : public QFrame {
+    Q_OBJECT
 
-  public:
+    public:
     NetworkList(QWidget *parent);
-
     QSize sizeHint() const override;
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void changed();
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void statusUpdate();
     void fillConnections();
     void openConfigureDialog();
 
-  private:
+    private:
     QToolButton *network, *wireless;
     QVBoxLayout *connectionsVbox;
     QHBoxLayout *hbox;
@@ -57,21 +55,20 @@ class NetworkList : public QFrame
 #include <NetworkManagerQt/AccessPoint>
 #include <IconButton.hxx>
 
-class NetworkButton : public IconButton
-{
-  Q_OBJECT
+class NetworkButton : public IconButton {
+    Q_OBJECT
 
-  public:
+    public:
     NetworkButton(NetworkManager::Connection::Ptr c = NetworkManager::Connection::Ptr(),
                   NetworkManager::Device::Ptr dev = NetworkManager::Device::Ptr(),
                   NetworkManager::AccessPoint::Ptr accessPoint = NetworkManager::AccessPoint::Ptr());
 
     static bool compare(const NetworkButton *left, const NetworkButton *right);
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void toggleNetworkStatus(bool on);
 
-  private:
+    private:
     NetworkManager::Connection::Ptr connection;
     NetworkManager::Device::Ptr device;
     QByteArray rawSsid;

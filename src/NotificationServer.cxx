@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <NotificationServer.hxx>
-#include <NotificationList.hxx>
+#include "NotificationServer.hxx"
+#include "NotificationList.hxx"
 
 #include <notificationsadaptor.h>
 
@@ -32,125 +32,113 @@
 
 //--------------------------------------------------------------------------------
 
-NotificationServer::NotificationServer(QWidget *parent)
-  : SysTrayItem(parent, "preferences-desktop-notification")
-{
-  new NotificationsAdaptor(this);
+NotificationServer::NotificationServer(QWidget *parent) : SysTrayItem(parent, "preferences-desktop-notification") {
+    new NotificationsAdaptor(this);
 
-  QDBusConnection dbus = QDBusConnection::sessionBus();
-  if ( dbus.registerService("org.freedesktop.Notifications") )
-  {
-    if ( !dbus.registerObject("/org/freedesktop/Notifications", this) )
-      dbus.unregisterService("org.freedesktop.Notifications");
-  }
-  notificationList = new NotificationList(this);
-  connect(notificationList, &NotificationList::listNowEmpty, this, &NotificationServer::hide);
-
-  connect(notificationList, &NotificationList::itemsCountChanged,
-          [this]()
-          {
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    if (dbus.registerService("org.freedesktop.Notifications")) {
+        if (! dbus.registerObject("/org/freedesktop/Notifications", this)) {
+            dbus.unregisterService("org.freedesktop.Notifications");
+        }
+    }
+    notificationList = new NotificationList(this);
+    connect(notificationList, &NotificationList::listNowEmpty, this, &NotificationServer::hide);
+    connect(notificationList, &NotificationList::itemsCountChanged, [this]() {
             show();
             setToolTip(makeToolTip());
-          }
-         );
+        }
+    );
 
-  hide();
+    hide();
 }
 
 //--------------------------------------------------------------------------------
 
-QString NotificationServer::makeToolTip() const
-{
-  QString tip = "<html>";
-  tip += i18np("%1 notification", "%1 notifications", notificationList->itemCount());
+QString NotificationServer::makeToolTip() const {
+    QString tip = "<html>";
+    tip += i18np("%1 notification", "%1 notifications", notificationList->itemCount());
 
-  if ( notificationList->itemCount() < 4 )
-  {
-    for (const NotifyItem *item : notificationList->getItems())
-    {
-      tip += "<hr>";
-      tip += item->timeLabel->text() + " ";
-      QString title = (item->appName == item->summary) ? item->appName : (item->appName + ": " + item->summary);
-      tip += "<b>" + title + "</b>";
-      tip += "<br>" + item->body;
+    if (notificationList->itemCount() < 4) {
+        for (const NotifyItem *item : notificationList->getItems()) {
+            tip += "<hr>";
+            tip += item->timeLabel->text() + " ";
+            QString title = (item->appName == item->summary) ? item->appName : (item->appName + ": " + item->summary);
+            tip += "<b>" + title + "</b>";
+            tip += "<br>" + item->body;
+        }
     }
-  }
 
-  tip += "</html>";
-  return tip;
+    tip += "</html>";
+
+    return tip;
 }
 
 //--------------------------------------------------------------------------------
 
-QStringList NotificationServer::GetCapabilities()
-{
-  return QStringList()
-           << "body"
-           << "body-hyperlinks"
-           << "body-images"
-           << "body-markup"
-           << "icon-static"
-           << "persistence"
-           << "actions"
-           ;
+QStringList NotificationServer::GetCapabilities() {
+    return QStringList() << "body" << "body-hyperlinks" << "body-images" << "body-markup" << "icon-static" << "persistence" << "actions";
 }
 
 //--------------------------------------------------------------------------------
 
-void NotificationServer::CloseNotification(uint id)
-{
-  notificationList->closeItem(id);
+void NotificationServer::CloseNotification(uint id) {
+    notificationList->closeItem(id);
 }
 
 //--------------------------------------------------------------------------------
 
-QString NotificationServer::GetServerInformation(QString &vendor, QString &version, QString &spec_version)
-{
-  vendor = "KDE";
-  version = "1.0";
-  spec_version = "1.2";
-  return "BifrostShell";
+QString NotificationServer::GetServerInformation(QString &vendor, QString &version, QString &spec_version) {
+    vendor = "KDE";
+    version = "1.0";
+    spec_version = "1.2";
+
+    return "BifrostShell";
 }
 
 //--------------------------------------------------------------------------------
 
-uint NotificationServer::Notify(const QString &app_name, uint replaces_id, const QString &app_icon,
-                                const QString &summary, const QString &theBody, const QStringList &actions,
-                                const QVariantMap &hints, int timeout)
-{
-  //qDebug() << "app" << app_name << "summary" << summary << "body" << theBody << "timeout" << timeout << "replaceId" << replaces_id
+uint NotificationServer::Notify(const QString &app_name,
+                                uint replaces_id,
+                                const QString &app_icon,
+                                const QString &summary,
+                                const QString &theBody,
+                                const QStringList &actions,
+                                const QVariantMap &hints,
+                                int timeout) {
+    //qDebug() << "app" << app_name << "summary" << summary << "body" << theBody << "timeout" << timeout << "replaceId" << replaces_id
            //<< "hints" << hints << "actions" << actions;
 
-  if ( replaces_id != 0 )
-    notificationList->closeItem(replaces_id);
+    if (replaces_id != 0) {
+        notificationList->closeItem(replaces_id);
+    }
 
-  QString body(theBody);
-  body.replace("\n", "<br>");
+    QString body(theBody);
+    body.replace("\n", "<br>");
 
-  QIcon icon;
-  if ( !app_icon.isEmpty() )
-    icon = QIcon::fromTheme(app_icon);
-  else if ( hints.contains("image-path") )
-    icon = QIcon(hints["image-path"].toString());
+    QIcon icon;
+    if (! app_icon.isEmpty()) {
+        icon = QIcon::fromTheme(app_icon);
+    } else if (hints.contains("image-path")) {
+        icon = QIcon(hints["image-path"].toString());
+    }
 
-  QString appName = app_name;
-  if ( appName.isEmpty() && hints.contains("desktop-entry") )
-  {
-    KService::Ptr service = KService::serviceByDesktopName(hints["desktop-entry"].toString().toLower());
-    if ( service )
-      appName = service->name();
-  }
+    QString appName = app_name;
+    if (appName.isEmpty() && hints.contains("desktop-entry")) {
+        KService::Ptr service = KService::serviceByDesktopName(hints["desktop-entry"].toString().toLower());
+        if (service) {
+            appName = service->name();
+        }
+    }
 
-  notificationList->addItem(notifyId, appName, summary, body, icon, actions, hints, timeout);
+    notificationList->addItem(notifyId, appName, summary, body, icon, actions, hints, timeout);
 
-  return notifyId++;
+    return notifyId++;
 }
 
 //--------------------------------------------------------------------------------
 
-QWidget *NotificationServer::getDetailsList()
-{
-  return notificationList;
+QWidget *NotificationServer::getDetailsList() {
+    return notificationList;
 }
 
 //--------------------------------------------------------------------------------

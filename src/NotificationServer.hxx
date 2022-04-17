@@ -23,37 +23,33 @@
 
 // https://developer.gnome.org/notification-spec/
 
-#include <SysTrayItem.hxx>
+#include "SysTrayItem.hxx"
+
 class NotificationList;
 
-class NotificationServer : public SysTrayItem
-{
-  Q_OBJECT
+class NotificationServer : public SysTrayItem {
+    Q_OBJECT
 
-  public:
+    public:
     NotificationServer(QWidget *parent);
-
     void CloseNotification(uint id);
-
     QStringList GetCapabilities();
-
     QString GetServerInformation(QString &vendor, QString &version, QString &spec_version);
-
     uint Notify(const QString &app_name, uint replaces_id, const QString &app_icon,
                 const QString &summary, const QString &body, const QStringList &actions,
                 const QVariantMap &hints, int timeout);
 
-  protected:
+    protected:
     QWidget *getDetailsList() override;
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void ActionInvoked(uint id, const QString &action_key);
     void NotificationClosed(uint id, uint reason);
 
-  private:
+    private:
     QString makeToolTip() const;
 
-  private:
+    private:
     uint notifyId = 1;
     NotificationList *notificationList;
 };

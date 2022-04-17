@@ -26,20 +26,18 @@
 #include <QLabel>
 #include <QIcon>
 #include <QMap>
+
 class QVBoxLayout;
 class QProgressBar;
 
-class NotifyItem : public QFrame
-{
-  Q_OBJECT
+class NotifyItem : public QFrame {
+    Q_OBJECT
 
-  public:
+    public:
     NotifyItem(QWidget *parent, uint theid, const QString &app,
                const QString &summary, const QString &body, const QIcon &icon,
                const QStringList &actions);
-
     void destroySysResources();
-
     void setTimeout(int milliSecs);
 
     uint id;
@@ -51,33 +49,29 @@ class NotifyItem : public QFrame
 
 //--------------------------------------------------------------------------------
 
-class NotificationList : public QWidget
-{
-  Q_OBJECT
+class NotificationList : public QWidget {
+    Q_OBJECT
 
-  public:
+    public:
     NotificationList(QWidget *parent);
     ~NotificationList() override;
-
     void addItem(uint id, const QString &appName, const QString &summary, const QString &body,
                  const QIcon &icon, const QStringList &actions, const QVariantMap &hints, int timeout);
-
     void closeItem(uint id);
-
     int itemCount() const { return items.count(); }
     QVector<NotifyItem *> getItems() const { return items; }
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void itemsCountChanged();
     void listNowEmpty();
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void itemDestroyed(QObject *item);
 
-  private:
+    private:
     void placeItems();
 
-  private:
+    private:
     QScrollArea *scrollArea;
     QVBoxLayout *listVbox;
     QMap<QString, int> appTimeouts;  // appName, timeout (minutes)
