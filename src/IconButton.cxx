@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <IconButton.hxx>
+#include "IconButton.hxx"
 
 #include <QHBoxLayout>
 
@@ -48,7 +48,7 @@ IconButton::IconButton(QWidget *parent) : QToolButton(parent) {
 //--------------------------------------------------------------------------------
 
 IconButton::IconButton(QWidget *parent, const QIcon &icon, int theIconSize, const QString &name) : IconButton(parent) {
-    if ( theIconSize != -1 ) {
+    if (theIconSize != -1) {
         setIconSize(QSize(theIconSize, theIconSize));
     }
 

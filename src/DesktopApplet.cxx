@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DesktopApplet.hxx>
+#include "DesktopApplet.hxx"
 
 #include <QAction>
 #include <QIcon>

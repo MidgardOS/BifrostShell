@@ -34,17 +34,16 @@ class QDBusMessage;
 
 //--------------------------------------------------------------------------------
 
-class KdeConnectDevice : public QObject
-{
-  Q_OBJECT
+class KdeConnectDevice : public QObject {
+    Q_OBJECT
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void changed();
 
-  public Q_SLOTS:
+    public Q_SLOTS:
     void updatePlugins();
 
-  public:
+    public:
     void ringPhone();
 
     QString id;
@@ -56,40 +55,38 @@ class KdeConnectDevice : public QObject
     bool warned = false;
     QDBusInterface *batteryInterface = nullptr;
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void nameChangedSlot(const QString &newName);
     void chargeChangedSlot();
 
-  private:
+    private:
     QPointer<KNotification> notif;
 };
 
 //--------------------------------------------------------------------------------
 
-class KdeConnect : public QObject
-{
-  Q_OBJECT
+class KdeConnect : public QObject {
+    Q_OBJECT
 
-  public:
+    public:
     KdeConnect();
 
-    struct Device : public QSharedPointer<KdeConnectDevice>
-    {
-      Device() : QSharedPointer(new KdeConnectDevice) {}
+    struct Device : public QSharedPointer<KdeConnectDevice> {
+        Device() : QSharedPointer(new KdeConnectDevice) {}
     };
 
-  Q_SIGNALS:
+    Q_SIGNALS:
     void deviceAdded(const Device &device);
     void deviceRemoved(const QString &devId);
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void getDevices();
     void gotDevices(const QDBusMessage &msg);
     void deviceAddedSlot(const QString &dev);
     void deviceRemovedSlot(const QString &dev);
     void deviceVisibilityChanged(const QString &dev, bool visible);
 
-  private:
+    private:
     QMap<QString, Device> devices;
 };
 

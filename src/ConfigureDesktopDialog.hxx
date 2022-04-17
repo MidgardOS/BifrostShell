@@ -21,11 +21,11 @@
 #ifndef _ConfigureDesktopDialog_H_
 #define _ConfigureDesktopDialog_H_
 
+#include "ui_ConfigureDesktopDialog.h"
+
 #include <QDialog>
 #include <QButtonGroup>
 #include <DesktopWidget.hxx>
-
-#include <ui_ConfigureDesktopDialog.h>
 
 class ConfigureDesktopDialog : public QDialog {
     Q_OBJECT

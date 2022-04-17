@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Bluetooth.hxx>
+#include "Bluetooth.hxx"
 
 #include <QIcon>
 

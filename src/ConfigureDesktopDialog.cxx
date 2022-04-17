@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <ConfigureDesktopDialog.hxx>
+#include "ConfigureDesktopDialog.hxx"
 
 #include <QStandardPaths>
 #include <QMimeDatabase>
@@ -28,6 +28,7 @@
 #include <QDebug>
 
 #include <KNS3/DownloadDialog>
+#include <KLocalizedString>
 
 //--------------------------------------------------------------------------------
 

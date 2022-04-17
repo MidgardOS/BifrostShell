@@ -23,26 +23,26 @@
 
 // network management (status display, activate, switch, ...)
 
-#include <SysTrayItem.hxx>
-#include <NetworkList.hxx>
+#include "SysTrayItem.hxx"
+#include "NetworkList.hxx"
+
 #include <QPointer>
 #include <QTimer>
 #include <QPixmap>
 
-class Network : public SysTrayItem
-{
-  Q_OBJECT
+class Network : public SysTrayItem {
+    Q_OBJECT
 
-  public:
+    public:
     Network(QWidget *parent);
 
-  protected:
+    protected:
     QWidget *getDetailsList() override;
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void checkState();
 
-  private:
+    private:
     QTimer blinkTimer;
     bool blinkState = false;
     QPixmap origPixmap;

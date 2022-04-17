@@ -18,17 +18,17 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DesktopPanel.hxx>
-#include <StartMenu.hxx>
-#include <QuickLaunch.hxx>
-#include <AppMenu.hxx>
-#include <Pager.hxx>
-#include <TaskBar.hxx>
-#include <LockLogout.hxx>
-#include <SysLoad.hxx>
-#include <SysTray.hxx>
-#include <ClockWidget.hxx>
-#include <WindowList.hxx>
+#include "DesktopPanel.hxx"
+#include "StartMenu.hxx"
+#include "QuickLaunch.hxx"
+#include "AppMenu.hxx"
+#include "Pager.hxx"
+#include "TaskBar.hxx"
+#include "LockLogout.hxx"
+#include "SysLoad.hxx"
+#include "SysTray.hxx"
+#include "ClockWidget.hxx"
+#include "WindowList.hxx"
 
 #include <kwindowsystem.h>
 #include <netwm.h>

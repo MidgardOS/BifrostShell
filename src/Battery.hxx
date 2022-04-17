@@ -21,7 +21,8 @@
 #ifndef _Battery_H_
 #define _Battery_H_
 
-#include <SysTrayItem.hxx>
+#include "SysTrayItem.hxx"
+
 #include <Solid/Device>
 #include <QPointer>
 #include <KCMultiDialog>

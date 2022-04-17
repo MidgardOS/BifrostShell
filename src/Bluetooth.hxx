@@ -21,7 +21,7 @@
 #ifndef _Bluetooth_H_
 #define _Bluetooth_H_
 
-#include <SysTrayItem.hxx>
+#include "SysTrayItem.hxx"
 
 #include <BluezQt/Manager>
 #include <QPointer>

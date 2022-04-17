@@ -60,7 +60,6 @@ set(SOURCES
     Bluetooth.cxx
     PopupMenu.cxx
     KdeConnect.cxx
-
     DesktopApplet.cxx
     WeatherApplet.cxx
     WeatherAppletConfigureDialog.cxx
@@ -68,8 +67,8 @@ set(SOURCES
     DiskUsageAppletConfigureDialog.cxx
     PictureFrameApplet.cxx
     PictureFrameAppletConfigureDialog.cxx
-
     Moon.cxx
+    PkUpdates.cxx
     BifrostShell.qrc
 )
 

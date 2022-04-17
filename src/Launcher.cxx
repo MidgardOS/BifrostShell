@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Launcher.hxx>
+#include "Launcher.hxx"
 
 #include <QVBoxLayout>
 #include <QFileDialog>
@@ -35,69 +35,60 @@
 
 //--------------------------------------------------------------------------------
 
-Launcher::Launcher(QWidget *parent, const QString &theId)
-  : QWidget(parent), id(theId)
-{
-  new QVBoxLayout(this);
-  layout()->setContentsMargins(QMargins());
+Launcher::Launcher(QWidget *parent, const QString &theId) : QWidget(parent), id(theId) {
+    new QVBoxLayout(this);
+    layout()->setContentsMargins(QMargins());
 }
 
 //--------------------------------------------------------------------------------
 
-void Launcher::loadConfig(const QString &defaultDir)
-{
-  KConfig config;
-  KConfigGroup group = config.group(id);
-  setDir(group.readEntry(QString("dirPath"), defaultDir));
+void Launcher::loadConfig(const QString &defaultDir) {
+    KConfig config;
+    KConfigGroup group = config.group(id);
+    setDir(group.readEntry(QString("dirPath"), defaultDir));
 }
 
 //--------------------------------------------------------------------------------
 
-void Launcher::setDir(const QString &theDirPath)
-{
-  if ( !dirWatcher.directories().isEmpty() )
-    dirWatcher.removePaths(dirWatcher.directories());
+void Launcher::setDir(const QString &theDirPath) {
+    if (! dirWatcher.directories().isEmpty()) {
+        dirWatcher.removePaths(dirWatcher.directories());
+    }
 
-  dirPath = theDirPath;
-  fill();
+    dirPath = theDirPath;
+    fill();
 
-  if ( !dirPath.isEmpty() )
-  {
-    dirWatcher.addPath(dirPath);
-    connect(&dirWatcher, &QFileSystemWatcher::directoryChanged, this, &Launcher::fill);
-  }
+    if (! dirPath.isEmpty()) {
+        dirWatcher.addPath(dirPath);
+        connect(&dirWatcher, &QFileSystemWatcher::directoryChanged, this, &Launcher::fill);
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void Launcher::contextMenuEvent(QContextMenuEvent *event)
-{
-  Q_UNUSED(event)
+void Launcher::contextMenuEvent(QContextMenuEvent *event) {
+    Q_UNUSED(event)
 
-  QMenu menu;
+    QMenu menu;
 
-  QAction *action = menu.addAction(QIcon::fromTheme("configure"), i18n("Configure..."));
-  connect(action, &QAction::triggered,
-          [this]()
-          {
+    QAction *action = menu.addAction(QIcon::fromTheme("configure"), i18n("Configure..."));
+    connect(action, &QAction::triggered, [this]() {
             QString path = QFileDialog::getExistingDirectory(this, QString(), dirPath);
-            if ( !path.isEmpty() )
-            {
-              KConfig config;
-              KConfigGroup group = config.group(id);
-              group.writeEntry(QString("dirPath"), path);
-              setDir(path);
+            if (! path.isEmpty()) {
+                KConfig config;
+                KConfigGroup group = config.group(id);
+                group.writeEntry(QString("dirPath"), path);
+                setDir(path);
             }
-          }
-         );
+        }
+    );
 
-  if ( !dirPath.isEmpty() )
-  {
-    action = menu.addAction(QIcon::fromTheme("folder"), i18n("Open Folder"));
-    connect(action, &QAction::triggered, [this]() { new KRun(QUrl::fromLocalFile(dirPath), nullptr); });
-  }
+    if (! dirPath.isEmpty()) {
+        action = menu.addAction(QIcon::fromTheme("folder"), i18n("Open Folder"));
+        connect(action, &QAction::triggered, [this]() { new KRun(QUrl::fromLocalFile(dirPath), nullptr); });
+    }
 
-  menu.exec(QCursor::pos());
+    menu.exec(QCursor::pos());
 }
 
 //--------------------------------------------------------------------------------

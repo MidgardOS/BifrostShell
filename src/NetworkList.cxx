@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <NetworkList.hxx>
+#include "NetworkList.hxx"
 
 #include <QCheckBox>
 #include <QToolButton>
@@ -51,218 +51,194 @@
 //--------------------------------------------------------------------------------
 
 NetworkButton::NetworkButton(NetworkManager::Connection::Ptr c, NetworkManager::Device::Ptr dev,
-                             NetworkManager::AccessPoint::Ptr accessPoint)
-  : connection(c), device(dev)
-{
-  setCheckable(true);
+                             NetworkManager::AccessPoint::Ptr accessPoint) : connection(c), device(dev) {
+    setCheckable(true);
 
-  if ( connection )
-  {
-    for (const NetworkManager::ActiveConnection::Ptr &ac : NetworkManager::activeConnections())
-    {
-      if ( ac->uuid() == c->uuid() )
-      {
-        setChecked(true);
-        break;
-      }
+    if (connection) {
+        for (const NetworkManager::ActiveConnection::Ptr &ac : NetworkManager::activeConnections()) {
+            if (ac->uuid() == c->uuid()) {
+                setChecked(true);
+                break;
+            }
+        }
     }
-  }
 
-  if ( accessPoint )
-  {
-    ssid = accessPoint->ssid();
-    rawSsid = accessPoint->rawSsid();
-    wpaFlags = accessPoint->rsnFlags() ? accessPoint->rsnFlags() : accessPoint->wpaFlags();
-  }
+    if (accessPoint) {
+        ssid = accessPoint->ssid();
+        rawSsid = accessPoint->rawSsid();
+        wpaFlags = accessPoint->rsnFlags() ? accessPoint->rsnFlags() : accessPoint->wpaFlags();
+    }
 
-  connect(this, &NetworkButton::toggled, this, &NetworkButton::toggleNetworkStatus);
+    connect(this, &NetworkButton::toggled, this, &NetworkButton::toggleNetworkStatus);
 }
 
 //--------------------------------------------------------------------------------
 
-bool NetworkButton::compare(const NetworkButton *left, const NetworkButton *right)
-{
-  if ( left->wpaFlags && !right->wpaFlags )
-    return true;
+bool NetworkButton::compare(const NetworkButton *left, const NetworkButton *right) {
+    if (left->wpaFlags && ! right->wpaFlags) {
+        return true;
+    }
 
-  return left->ssid.localeAwareCompare(right->ssid) < 0;
+    return left->ssid.localeAwareCompare(right->ssid) < 0;
 }
 
 //--------------------------------------------------------------------------------
 
-void NetworkButton::toggleNetworkStatus(bool on)
-{
-  if ( on )
-  {
-    if ( !connection )  // no connection yet -> create one
-    {
-      // the connMap content was "reverse-engineered" by using qdbusviewer and the result of getting
-      // GetSettings of one of theSettings.Connection elements
+void NetworkButton::toggleNetworkStatus(bool on) {
+    if (on) {
+        if (! connection) {  // no connection yet -> create one
+            // the connMap content was "reverse-engineered" by using qdbusviewer and the result of getting
+            // GetSettings of one of theSettings.Connection elements
 
-      NMVariantMapMap connMap;
-      QVariantMap map;
-      map.insert("id", ssid);
+            NMVariantMapMap connMap;
+            QVariantMap map;
+            map.insert("id", ssid);
 
-      // ensure to not need root password by creating only for the current user
-      struct passwd *pwd = getpwuid(geteuid());
-      if ( pwd )
-        map.insert("permissions", QStringList(QString("user:") + QString::fromUtf8(pwd->pw_name)));
+            // ensure to not need root password by creating only for the current user
+            struct passwd *pwd = getpwuid(geteuid());
+            if (pwd) {
+                map.insert("permissions", QStringList(QString("user:") + QString::fromUtf8(pwd->pw_name)));
+            }
 
-      connMap.insert("connection", map);
+            connMap.insert("connection", map);
 
-      QVariantMap wirelessMap;
-      wirelessMap.insert("ssid", rawSsid);
+            QVariantMap wirelessMap;
+            wirelessMap.insert("ssid", rawSsid);
 
-      if ( wpaFlags )
-      {
-        wirelessMap.insert("security", "802-11-wireless-security");
+            if (wpaFlags) {
+                wirelessMap.insert("security", "802-11-wireless-security");
 
-        QVariantMap security;
-        if ( wpaFlags & NetworkManager::AccessPoint::KeyMgmtPsk )
-          security.insert("key-mgmt", QString("wpa-psk"));
+                QVariantMap security;
+                if (wpaFlags & NetworkManager::AccessPoint::KeyMgmtPsk) {
+                    security.insert("key-mgmt", QString("wpa-psk"));
 #if (NETWORKMANAGERQT_VERSION >= QT_VERSION_CHECK(5, 63, 0))
-        else if ( wpaFlags & NetworkManager::AccessPoint::KeyMgmtSAE )
-          security.insert("key-mgmt", QString("sae"));
+                } else if (wpaFlags & NetworkManager::AccessPoint::KeyMgmtSAE) {
+                    security.insert("key-mgmt", QString("sae"));
 #endif
-        else
-        {
-          // TODO: other types - find value names
+                } else {
+                    // TODO: other types - find value names
+                }
+
+                connMap.insert("802-11-wireless-security", security);
+            }
+
+            connMap.insert("802-11-wireless", wirelessMap);
+
+            QDBusPendingReply<QDBusObjectPath, QDBusObjectPath> call =
+                NetworkManager::addAndActivateConnection(connMap, device->uni(), QString());
+
+            /*
+            QDBusPendingCallWatcher *pendingCallWatcher = new QDBusPendingCallWatcher(call, this);
+            connect(pendingCallWatcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *w) {
+                    w->deleteLater();
+                    QDBusPendingReply<QDBusObjectPath, QDBusObjectPath> reply = *w;
+                    qDebug() << reply.error();
+                }
+            );
+            */
+
+            // without closing our popup, the user can not enter the password in the password dialog which appears
+            window()->close();
+
+            return;
         }
 
-        connMap.insert("802-11-wireless-security", security);
-      }
-
-      connMap.insert("802-11-wireless", wirelessMap);
-
-      QDBusPendingReply<QDBusObjectPath, QDBusObjectPath> call =
-          NetworkManager::addAndActivateConnection(connMap, device->uni(), QString());
-
-      /*
-      QDBusPendingCallWatcher *pendingCallWatcher = new QDBusPendingCallWatcher(call, this);
-      connect(pendingCallWatcher, &QDBusPendingCallWatcher::finished, this,
-              [this](QDBusPendingCallWatcher *w)
-              {
-                w->deleteLater();
-                QDBusPendingReply<QDBusObjectPath, QDBusObjectPath> reply = *w;
-                qDebug() << reply.error();
-              }
-             );
-      */
-
-      // without closing our popup, the user can not enter the password in the password dialog which appears
-      window()->close();
-
-      return;
+        switch (connection->settings()->connectionType()) {
+            case NetworkManager::ConnectionSettings::Wired: {
+                NetworkManager::activateConnection(connection->path(), connection->settings()->interfaceName(), QString());
+                break;
+            }
+            case NetworkManager::ConnectionSettings::Wireless: {
+                NetworkManager::activateConnection(connection->path(), device->uni(), QString());
+                break;
+            }
+            case NetworkManager::ConnectionSettings::Vpn: {
+                NetworkManager::ActiveConnection::Ptr conn(NetworkManager::primaryConnection());
+                if (conn && !conn->devices().isEmpty()) {
+                    NetworkManager::activateConnection(connection->path(), conn->devices()[0], QString());
+                }
+                break;
+            }
+            default: ; // TODO
+        }
+    } else if (connection) {
+        for (const NetworkManager::ActiveConnection::Ptr &ac : NetworkManager::activeConnections()) {
+            if (ac->uuid() == connection->uuid()) {
+                NetworkManager::deactivateConnection(ac->path());
+                break;
+            }
+        }
     }
-
-    switch ( connection->settings()->connectionType() )
-    {
-      case NetworkManager::ConnectionSettings::Wired:
-      {
-        NetworkManager::activateConnection(connection->path(), connection->settings()->interfaceName(), QString());
-        break;
-      }
-
-      case NetworkManager::ConnectionSettings::Wireless:
-      {
-        NetworkManager::activateConnection(connection->path(), device->uni(), QString());
-        break;
-      }
-
-      case NetworkManager::ConnectionSettings::Vpn:
-      {
-        NetworkManager::ActiveConnection::Ptr conn(NetworkManager::primaryConnection());
-        if ( conn && !conn->devices().isEmpty() )
-          NetworkManager::activateConnection(connection->path(), conn->devices()[0], QString());
-        break;
-      }
-
-      default: ; // TODO
-    }
-  }
-  else if ( connection )
-  {
-    for (const NetworkManager::ActiveConnection::Ptr &ac : NetworkManager::activeConnections())
-    {
-      if ( ac->uuid() == connection->uuid() )
-      {
-        NetworkManager::deactivateConnection(ac->path());
-        break;
-      }
-    }
-  }
 }
 
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 
-NetworkList::NetworkList(QWidget *parent)
-  : QFrame(parent)
-{
-  setWindowFlags(windowFlags() | Qt::Popup);
-  setFrameShape(QFrame::StyledPanel);
+NetworkList::NetworkList(QWidget *parent) : QFrame(parent) {
+    setWindowFlags(windowFlags() | Qt::Popup);
+    setFrameShape(QFrame::StyledPanel);
 
-  QVBoxLayout *vbox = new QVBoxLayout(this);
-  hbox = new QHBoxLayout;
-  vbox->addLayout(hbox);
+    QVBoxLayout *vbox = new QVBoxLayout(this);
+    hbox = new QHBoxLayout;
+    vbox->addLayout(hbox);
 
-  network = new QToolButton;
-  network->setIcon(QIcon::fromTheme("network-wired"));
-  network->setIconSize(QSize(22, 22));
-  network->setCheckable(true);
-  connect(network, &QToolButton::clicked, [](bool on) { NetworkManager::setNetworkingEnabled(on); });
-  connect(NetworkManager::notifier(), &NetworkManager::Notifier::networkingEnabledChanged, this, &NetworkList::statusUpdate);
-  hbox->addWidget(network);
+    network = new QToolButton;
+    network->setIcon(QIcon::fromTheme("network-wired"));
+    network->setIconSize(QSize(22, 22));
+    network->setCheckable(true);
+    connect(network, &QToolButton::clicked, [](bool on) { NetworkManager::setNetworkingEnabled(on); });
+    connect(NetworkManager::notifier(), &NetworkManager::Notifier::networkingEnabledChanged, this, &NetworkList::statusUpdate);
+    hbox->addWidget(network);
 
-  wireless = new QToolButton;
-  wireless->setIcon(QIcon::fromTheme("network-wireless"));
-  wireless->setIconSize(QSize(22, 22));
-  wireless->setCheckable(true);
-  connect(wireless, &QToolButton::clicked, [](bool on) { NetworkManager::setWirelessEnabled(on); });
-  connect(NetworkManager::notifier(), &NetworkManager::Notifier::wirelessEnabledChanged, this, &NetworkList::statusUpdate);
-  hbox->addWidget(wireless);
+    wireless = new QToolButton;
+    wireless->setIcon(QIcon::fromTheme("network-wireless"));
+    wireless->setIconSize(QSize(22, 22));
+    wireless->setCheckable(true);
+    connect(wireless, &QToolButton::clicked, [](bool on) { NetworkManager::setWirelessEnabled(on); });
+    connect(NetworkManager::notifier(), &NetworkManager::Notifier::wirelessEnabledChanged, this, &NetworkList::statusUpdate);
+    hbox->addWidget(wireless);
 
-  statusUpdate();
+    statusUpdate();
 
-  hbox->addStretch();
+    hbox->addStretch();
 
-  QToolButton *configure = new QToolButton;
-  configure->setIcon(QIcon::fromTheme("configure"));
-  configure->setIconSize(QSize(22, 22));
-  configure->setToolTip(i18n("Configure Network Connections"));
-  connect(configure, &QToolButton::clicked, this, &NetworkList::openConfigureDialog);
-  hbox->addWidget(configure);
+    QToolButton *configure = new QToolButton;
+    configure->setIcon(QIcon::fromTheme("configure"));
+    configure->setIconSize(QSize(22, 22));
+    configure->setToolTip(i18n("Configure Network Connections"));
+    connect(configure, &QToolButton::clicked, this, &NetworkList::openConfigureDialog);
+    hbox->addWidget(configure);
 
-  // show connections
-  QWidget *widget = new QWidget;
-  connectionsVbox = new QVBoxLayout(widget);
-  connectionsVbox->setContentsMargins(QMargins());
-  connectionsVbox->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    // show connections
+    QWidget *widget = new QWidget;
+    connectionsVbox = new QVBoxLayout(widget);
+    connectionsVbox->setContentsMargins(QMargins());
+    connectionsVbox->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
-  scroll = new QScrollArea;
-  scroll->setWidgetResizable(true);
-  scroll->setWidget(widget);
+    scroll = new QScrollArea;
+    scroll->setWidgetResizable(true);
+    scroll->setWidget(widget);
 
-  vbox->addWidget(scroll);
+    vbox->addWidget(scroll);
 
-  fillConnections();
+    fillConnections();
 
-  QTimer *checkConnectionsTimer = new QTimer(this);
-  checkConnectionsTimer->setInterval(1000);
-  connect(checkConnectionsTimer, &QTimer::timeout, this, &NetworkList::fillConnections);
-  checkConnectionsTimer->start();
+    QTimer *checkConnectionsTimer = new QTimer(this);
+    checkConnectionsTimer->setInterval(1000);
+    connect(checkConnectionsTimer, &QTimer::timeout, this, &NetworkList::fillConnections);
+    checkConnectionsTimer->start();
 }
 
 //--------------------------------------------------------------------------------
 
-void NetworkList::openConfigureDialog()
-{
-  // newer plasma has already a KCM
-  KService::Ptr service = KService::serviceByDesktopName("kcm_networkmanagement");
+void NetworkList::openConfigureDialog() {
+    // newer plasma has already a KCM
+    KService::Ptr service = KService::serviceByDesktopName("kcm_networkmanagement");
 
-  if ( !service )
-    service = new KService("", "kde5-nm-connection-editor", "");
+    if (! service) {
+        service = new KService("", "kde5-nm-connection-editor", "");
+    }
 
 #if KIO_VERSION >= QT_VERSION_CHECK(5, 71, 0)
     auto *job = new KIO::ApplicationLauncherJob(service);
@@ -272,207 +248,198 @@ void NetworkList::openConfigureDialog()
     KRun::runApplication(*service, QList<QUrl>(), this);
 #endif
 
-  close();
+    close();
 }
 
 //--------------------------------------------------------------------------------
 
-void NetworkList::statusUpdate()
-{
-  network->setChecked(NetworkManager::isNetworkingEnabled());
-  wireless->setChecked(NetworkManager::isWirelessEnabled());
+void NetworkList::statusUpdate() {
+    network->setChecked(NetworkManager::isNetworkingEnabled());
+    wireless->setChecked(NetworkManager::isWirelessEnabled());
 
-  if ( NetworkManager::isNetworkingEnabled() )
-    network->setToolTip(i18n("Networking is enabled. Click to disable"));
-  else
-    network->setToolTip(i18n("Networking is disabled. Click to enable"));
+    if (NetworkManager::isNetworkingEnabled()) {
+        network->setToolTip(i18n("Networking is enabled. Click to disable"));
+    } else {
+        network->setToolTip(i18n("Networking is disabled. Click to enable"));
+    }
 
-  if ( NetworkManager::isWirelessEnabled() )
-    wireless->setToolTip(i18n("Wireless Networking is enabled. Click to disable"));
-  else
-    wireless->setToolTip(i18n("Wireless Networking is disabled. Click to enable"));
+    if (NetworkManager::isWirelessEnabled()) {
+        wireless->setToolTip(i18n("Wireless Networking is enabled. Click to disable"));
+    } else {
+        wireless->setToolTip(i18n("Wireless Networking is disabled. Click to enable"));
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void NetworkList::fillConnections()
-{
-  QLayoutItem *child;
-  while ( (child = connectionsVbox->takeAt(0)) )
-  {
-    delete child->widget();
-    delete child;
-  }
-
-  NetworkManager::Connection::List allConnections = NetworkManager::listConnections();
-
-  // show VPN networks on top
-  for (const NetworkManager::Connection::Ptr &c : allConnections)
-  {
-    if ( !c->isValid() )
-      continue;
-
-    if ( c->settings()->connectionType() == NetworkManager::ConnectionSettings::Vpn )
-    {
-      NetworkButton *vpn = new NetworkButton(c);
-      vpn->setText(c->name());
-      vpn->setIcon(QIcon::fromTheme("security-high"));
-      connectionsVbox->addWidget(vpn);
-      vpn->show();
+void NetworkList::fillConnections() {
+    QLayoutItem *child;
+    while ((child = connectionsVbox->takeAt(0))) {
+        delete child->widget();
+        delete child;
     }
-  }
 
-  // wired networks
-  for (const NetworkManager::Connection::Ptr &c : allConnections)
-  {
-    if ( !c->isValid() )
-      continue;
+    NetworkManager::Connection::List allConnections = NetworkManager::listConnections();
 
-    if ( (c->settings()->connectionType() == NetworkManager::ConnectionSettings::Wired) &&
-         !c->uuid().isEmpty() )
-    {
-      NetworkButton *net = new NetworkButton(c);
-      net->setText(c->name());
-      net->setIcon(QIcon::fromTheme("network-wired"));
-      connectionsVbox->addWidget(net);
-      net->show();
+    // show VPN networks on top
+    for (const NetworkManager::Connection::Ptr &c : allConnections) {
+        if (! c->isValid()){
+            continue;
+        }
+
+        if (c->settings()->connectionType() == NetworkManager::ConnectionSettings::Vpn) {
+            NetworkButton *vpn = new NetworkButton(c);
+            vpn->setText(c->name());
+            vpn->setIcon(QIcon::fromTheme("security-high"));
+            connectionsVbox->addWidget(vpn);
+            vpn->show();
+        }
     }
-  }
 
-  // show available wifi networks
-  if ( NetworkManager::isWirelessEnabled() )
-  {
-    QVector<NetworkButton *> entries;
+    // wired networks
+    for (const NetworkManager::Connection::Ptr &c : allConnections) {
+        if (! c->isValid()) {
+            continue;
+        }
 
-    for (const NetworkManager::Device::Ptr &device : NetworkManager::networkInterfaces())
-    {
-      if ( device->type() != NetworkManager::Device::Wifi )
-        continue;
+        if ((c->settings()->connectionType() == NetworkManager::ConnectionSettings::Wired) && ! c->uuid().isEmpty()) {
+            NetworkButton *net = new NetworkButton(c);
+            net->setText(c->name());
+            net->setIcon(QIcon::fromTheme("network-wired"));
+            connectionsVbox->addWidget(net);
+            net->show();
+        }
+    }
 
-      NetworkManager::WirelessDevice::Ptr wifiDevice = device.objectCast<NetworkManager::WirelessDevice>();
+    // show available wifi networks
+    if (NetworkManager::isWirelessEnabled()) {
+        QVector<NetworkButton *> entries;
 
-      for (const NetworkManager::WirelessNetwork::Ptr &network : wifiDevice->networks())
-      {
-        NetworkManager::AccessPoint::Ptr accessPoint = network->referenceAccessPoint();
-
-        if ( !accessPoint )
-          continue;
-
-        // check if we have a connection for this SSID
-        NetworkManager::Connection::Ptr conn;
-        for (const NetworkManager::Connection::Ptr &c : allConnections)
-        {
-          if ( c->isValid() && (c->settings()->connectionType() == NetworkManager::ConnectionSettings::Wireless) )
-          {
-            NetworkManager::Setting::Ptr setting = c->settings()->setting(NetworkManager::Setting::Wireless);
-            NetworkManager::WirelessSetting::Ptr s = setting.staticCast<NetworkManager::WirelessSetting>();
-
-            if ( s->ssid() == network->ssid() )
-            {
-              conn = c;
-              break;
+        for (const NetworkManager::Device::Ptr &device : NetworkManager::networkInterfaces()) {
+            if (device->type() != NetworkManager::Device::Wifi) {
+                continue;
             }
-          }
+
+            NetworkManager::WirelessDevice::Ptr wifiDevice = device.objectCast<NetworkManager::WirelessDevice>();
+            for (const NetworkManager::WirelessNetwork::Ptr &network : wifiDevice->networks()) {
+                NetworkManager::AccessPoint::Ptr accessPoint = network->referenceAccessPoint();
+
+                if (! accessPoint) {
+                    continue;
+                }
+
+                // check if we have a connection for this SSID
+                NetworkManager::Connection::Ptr conn;
+                for (const NetworkManager::Connection::Ptr &c : allConnections) {
+                    if (c->isValid() && (c->settings()->connectionType() == NetworkManager::ConnectionSettings::Wireless)) {
+                        NetworkManager::Setting::Ptr setting = c->settings()->setting(NetworkManager::Setting::Wireless);
+                        NetworkManager::WirelessSetting::Ptr s = setting.staticCast<NetworkManager::WirelessSetting>();
+
+                        if (s->ssid() == network->ssid()) {
+                            conn = c;
+                            break;
+                        }
+                    }
+                }
+
+                NetworkButton *net = new NetworkButton(conn, device, accessPoint);
+
+                if (conn) {
+                    net->setText(QString("%1 (%2%)").arg(conn->name()).arg(network->signalStrength()));
+                } else {
+                    net->setText(QString("%1 (%2%)").arg(network->ssid()).arg(network->signalStrength()));
+                }
+
+                net->setIcon(QIcon::fromTheme("network-wireless"));
+
+                if (accessPoint->wpaFlags() || accessPoint->rsnFlags()) {
+                    net->setIcon2(QIcon::fromTheme("object-locked"));
+                } else {
+                    // make it more obvious when an access point is not secured
+                    // by not showing any "lock" icon (also the unlocked icon is hardly different than the locked one,
+                    // so the user might easily miss the "insecure" icon)
+                    //net->setIcon2(QIcon::fromTheme("object-unlocked"));
+                }
+
+                entries.append(net);
+            }
         }
 
-        NetworkButton *net = new NetworkButton(conn, device, accessPoint);
-
-        if ( conn )
-          net->setText(QString("%1 (%2%)").arg(conn->name()).arg(network->signalStrength()));
-        else
-          net->setText(QString("%1 (%2%)").arg(network->ssid()).arg(network->signalStrength()));
-
-        net->setIcon(QIcon::fromTheme("network-wireless"));
-
-        if ( accessPoint->wpaFlags() || accessPoint->rsnFlags() )
-          net->setIcon2(QIcon::fromTheme("object-locked"));
-        else
-        {
-          // make it more obvious when an access point is not secured
-          // by not showing any "lock" icon (also the unlocked icon is hardly different than the locked one,
-          // so the user might easily miss the "insecure" icon)
-          //net->setIcon2(QIcon::fromTheme("object-unlocked"));
+        // sort entries: secure before insecure APs
+        std::stable_sort(entries.begin(), entries.end(), &NetworkButton::compare);
+        for (NetworkButton *entry : entries) {
+            connectionsVbox->addWidget(entry);
+            entry->show();
         }
-
-        entries.append(net);
-      }
     }
-
-    // sort entries: secure before insecure APs
-    std::stable_sort(entries.begin(), entries.end(), &NetworkButton::compare);
-    foreach (NetworkButton *entry, entries)
-    {
-      connectionsVbox->addWidget(entry);
-      entry->show();
-    }
-  }
 
 #if 0
-  // TEST
-  static int count = 15;
-  for (int i = 0; i < count; i++)
-  {
-    NetworkButton *net = new NetworkButton();
-    net->setText(QString("dummy %1").arg(i));
-    net->setIcon(QIcon::fromTheme("network-wired"));
-    connectionsVbox->addWidget(net);
-    net->show();
-  }
-  count -= 3;
-  if ( count <= 0 ) count = 15;
+    // TEST
+    static int count = 15;
+    for (int i = 0; i < count; i++) {
+        NetworkButton *net = new NetworkButton();
+        net->setText(QString("dummy %1").arg(i));
+        net->setIcon(QIcon::fromTheme("network-wired"));
+        connectionsVbox->addWidget(net);
+        net->show();
+    }
+    count -= 3;
+    if ( count <= 0 ) {
+        count = 15;
+    }
 #endif
 
-  connectionsVbox->addStretch();
-  adjustSize();
-  emit changed();
+    connectionsVbox->addStretch();
+    adjustSize();
+    emit changed();
 
-  // WA_UnderMouse is only updated with Enter/Leave events in QApplication, but this status
-  // is used to render the button hovered or not. Therefore we must update the flag on our own here
-  QPoint p = scroll->widget()->mapFromGlobal(QCursor::pos());
-  for (int i = 0; i < connectionsVbox->count(); i++)
-  {
-    QWidget *button = connectionsVbox->itemAt(i)->widget();
-    if ( button )
-      button->setAttribute(Qt::WA_UnderMouse, button->geometry().contains(p));
-  }
+    // WA_UnderMouse is only updated with Enter/Leave events in QApplication, but this status
+    // is used to render the button hovered or not. Therefore we must update the flag on our own here
+    QPoint p = scroll->widget()->mapFromGlobal(QCursor::pos());
+    for (int i = 0; i < connectionsVbox->count(); i++) {
+        QWidget *button = connectionsVbox->itemAt(i)->widget();
+        if (button) {
+            button->setAttribute(Qt::WA_UnderMouse, button->geometry().contains(p));
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-QSize NetworkList::sizeHint() const
-{
-  QWidget *w = scroll->widget();
-  QSize s;
+QSize NetworkList::sizeHint() const {
+    QWidget *w = scroll->widget();
+    QSize s;
 
-  s.setHeight(frameWidth() +
-              contentsMargins().top() +
-              layout()->contentsMargins().top() +
-              hbox->sizeHint().height() +
-              ((layout()->spacing() == -1) ? style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing) : layout()->spacing()) +
-              scroll->frameWidth() +
-              scroll->contentsMargins().top() +
-              w->sizeHint().height() +
-              scroll->contentsMargins().bottom() +
-              scroll->frameWidth() +
-              layout()->contentsMargins().bottom() +
-              contentsMargins().bottom() +
-              frameWidth()
-             );
+    s.setHeight(frameWidth() +
+                contentsMargins().top() +
+                layout()->contentsMargins().top() +
+                hbox->sizeHint().height() +
+                ((layout()->spacing() == -1) ? style()->pixelMetric(QStyle::PM_DefaultLayoutSpacing) : layout()->spacing()) +
+                scroll->frameWidth() +
+                scroll->contentsMargins().top() +
+                w->sizeHint().height() +
+                scroll->contentsMargins().bottom() +
+                scroll->frameWidth() +
+                layout()->contentsMargins().bottom() +
+                contentsMargins().bottom() +
+                frameWidth()
+    );
 
-  s.setWidth(frameWidth() +
-             contentsMargins().left() +
-             layout()->contentsMargins().left() +
-             scroll->frameWidth() +
-             scroll->contentsMargins().left() +
-             w->sizeHint().width() +
-             scroll->verticalScrollBar()->sizeHint().width() +
-             scroll->contentsMargins().right() +
-             scroll->frameWidth() +
-             layout()->contentsMargins().right() +
-             contentsMargins().right() +
-             frameWidth()
-            );
-  return s;
+    s.setWidth(frameWidth() +
+               contentsMargins().left() +
+               layout()->contentsMargins().left() +
+               scroll->frameWidth() +
+               scroll->contentsMargins().left() +
+               w->sizeHint().width() +
+               scroll->verticalScrollBar()->sizeHint().width() +
+               scroll->contentsMargins().right() +
+               scroll->frameWidth() +
+               layout()->contentsMargins().right() +
+               contentsMargins().right() +
+               frameWidth()
+    );
+
+    return s;
 }
 
 //--------------------------------------------------------------------------------

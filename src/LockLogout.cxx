@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <LockLogout.hxx>
+#include "LockLogout.hxx"
 
 #include <QGridLayout>
 #include <QIcon>
@@ -29,67 +29,59 @@
 
 //--------------------------------------------------------------------------------
 
-LockLogout::LockLogout(DesktopPanel *parent)
-  : QWidget(parent)
-{
-  setObjectName("LockLogout");
+LockLogout::LockLogout(DesktopPanel *parent) : QWidget(parent) {
+    setObjectName("LockLogout");
 
-  QGridLayout *grid = new QGridLayout(this);
-  grid->setContentsMargins(QMargins());
-  grid->setSpacing(2);
+    QGridLayout *grid = new QGridLayout(this);
+    grid->setContentsMargins(QMargins());
+    grid->setSpacing(2);
 
-  lock   = new QToolButton;
-  logout = new QToolButton;
+    lock   = new QToolButton;
+    logout = new QToolButton;
 
-  lock->setIcon(QIcon::fromTheme("system-lock-screen"));
-  logout->setIcon(QIcon::fromTheme("system-shutdown"));
+    lock->setIcon(QIcon::fromTheme("system-lock-screen"));
+    logout->setIcon(QIcon::fromTheme("system-shutdown"));
 
-  lock->setIconSize(QSize(22, 22));
-  logout->setIconSize(QSize(22, 22));
+    lock->setIconSize(QSize(22, 22));
+    logout->setIconSize(QSize(22, 22));
 
-  lock->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-  logout->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    lock->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    logout->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-  connect(lock, &QToolButton::clicked,
-          []()
-          {
+    connect(lock, &QToolButton::clicked, []() {
             QDBusConnection::sessionBus().send(
                 QDBusMessage::createMethodCall("org.freedesktop.ScreenSaver", "/ScreenSaver",
-                                               "org.freedesktop.ScreenSaver", "Lock"));
-          });
+                                               "org.freedesktop.ScreenSaver", "Lock")
+            );
+        }
+    );
 
-  connect(logout, &QToolButton::clicked,
-          []()
-          {
+    connect(logout, &QToolButton::clicked, []() {
             QDBusMessage msg = QDBusMessage::createMethodCall("org.kde.ksmserver", "/KSMServer",
                                                               "org.kde.KSMServerInterface", "logout");
             msg << -1 << 0 << 0;  // plasma-workspace/libkworkspace/kworkspace.h
-
             QDBusConnection::sessionBus().send(msg);
-          });
+        }
+    );
 
-  fill(parent->getRows());
-  connect(parent, &DesktopPanel::rowsChanged, this, &LockLogout::fill);
+    fill(parent->getRows());
+    connect(parent, &DesktopPanel::rowsChanged, this, &LockLogout::fill);
 }
 
 //--------------------------------------------------------------------------------
 
-void LockLogout::fill(int rows)
-{
-  QGridLayout *grid = static_cast<QGridLayout *>(layout());
-  delete grid->takeAt(0);
-  delete grid->takeAt(1);
+void LockLogout::fill(int rows) {
+    QGridLayout *grid = static_cast<QGridLayout *>(layout());
+    delete grid->takeAt(0);
+    delete grid->takeAt(1);
 
-  if ( rows == 1 )
-  {
-    grid->addWidget(lock, 0, 0);
-    grid->addWidget(logout, 0, 1);
-  }
-  else
-  {
-    grid->addWidget(lock, 0, 0);
-    grid->addWidget(logout, 1, 0);
-  }
+    if (rows == 1) {
+        grid->addWidget(lock, 0, 0);
+        grid->addWidget(logout, 0, 1);
+    } else {
+        grid->addWidget(lock, 0, 0);
+        grid->addWidget(logout, 1, 0);
+    }
 }
 
 //--------------------------------------------------------------------------------

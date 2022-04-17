@@ -18,13 +18,13 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "DesktopWidget.hxx"
+
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDBusPendingCall>
-
-#include <DesktopWidget.hxx>
 
 #include <KCrash>
 #include <KLocalizedString>

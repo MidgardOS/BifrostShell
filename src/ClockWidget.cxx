@@ -18,9 +18,9 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <ClockWidget.hxx>
-#include <ClockWidgetConfigureDialog.hxx>
-#include <DesktopWidget.hxx>
+#include "ClockWidget.hxx"
+#include "ClockWidgetConfigureDialog.hxx"
+#include "DesktopWidget.hxx"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

@@ -21,8 +21,9 @@
 #ifndef _DiskUsageAppletConfigureDialog_H_
 #define _DiskUsageAppletConfigureDialog_H_
 
+#include "ui_DiskUsageAppletConfigureDialog.h"
+
 #include <QDialog>
-#include <ui_DiskUsageAppletConfigureDialog.h>
 
 class DiskUsageApplet;
 

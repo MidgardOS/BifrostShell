@@ -21,22 +21,21 @@
 #ifndef _LockLogout_H_
 #define _LockLogout_H_
 
+#include "DesktopPanel.hxx"
+
 #include <QWidget>
 #include <QToolButton>
 
-#include <DesktopPanel.hxx>
+class LockLogout : public QWidget {
+    Q_OBJECT
 
-class LockLogout : public QWidget
-{
-  Q_OBJECT
-
-  public:
+    public:
     LockLogout(DesktopPanel *parent);
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     void fill(int rows);
 
-  private:
+    private:
     QToolButton *lock, *logout;
 };
 

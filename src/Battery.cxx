@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Battery.hxx>
+#include "Battery.hxx"
 
 #include <QIcon>
 #include <QDBusConnection>

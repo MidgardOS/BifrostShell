@@ -21,12 +21,12 @@
 #ifndef _ClockWidget_H_
 #define _ClockWidget_H_
 
+#include "DesktopPanel.hxx"
+
 #include <QTimer>
 #include <QLabel>
 #include <QFrame>
 #include <QCalendarWidget>
-
-#include <DesktopPanel.hxx>
 
 class CalendarPopup : public QFrame {
     Q_OBJECT

@@ -24,22 +24,21 @@
 #include <QWidget>
 #include <QFileSystemWatcher>
 
-class Launcher : public QWidget
-{
-  Q_OBJECT
+class Launcher : public QWidget {
+    Q_OBJECT
 
-  public:
+    public:
     Launcher(QWidget *parent, const QString &theId);
 
-  protected:
+    protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void loadConfig(const QString &defaultDir = QString());
     void setDir(const QString &theDirPath);
 
-  private Q_SLOTS:
+    private Q_SLOTS:
     virtual void fill() = 0;
 
-  protected:
+    protected:
     QString id;
     QString dirPath;
     QFileSystemWatcher dirWatcher;
