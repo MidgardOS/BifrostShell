@@ -22,7 +22,7 @@
 #define _PictureFrameAppletConfigureDialog_H_
 
 #include <QDialog>
-#include <ui_PictureFrameAppletConfigureDialog.h>
+#include "ui_PictureFrameAppletConfigureDialog.h"
 class PictureFrameApplet;
 
 class PictureFrameAppletConfigureDialog : public QDialog

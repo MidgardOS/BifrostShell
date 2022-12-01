@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <SysTrayItem.hxx>
-#include <DesktopWidget.hxx>
+#include "SysTrayItem.hxx"
+#include "DesktopWidget.hxx"
 
 #include <QMouseEvent>
 #include <QApplication>

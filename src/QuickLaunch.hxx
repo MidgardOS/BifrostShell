@@ -21,8 +21,8 @@
 #ifndef _QuickLaunch_H_
 #define _QuickLaunch_H_
 
-#include <Launcher.hxx>
-#include <DesktopPanel.hxx>
+#include "Launcher.hxx"
+#include "DesktopPanel.hxx"
 
 #include <QGridLayout>
 

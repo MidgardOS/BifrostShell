@@ -21,7 +21,7 @@
 #ifndef _DeviceNotifier_H_
 #define _DeviceNotifier_H_
 
-#include <SysTrayItem.hxx>
+#include "SysTrayItem.hxx"
 #include <QTimer>
 
 class DeviceList;

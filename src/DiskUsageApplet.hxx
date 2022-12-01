@@ -21,7 +21,7 @@
 #ifndef _DiskUsageApplet_H_
 #define _DiskUsageApplet_H_
 
-#include <DesktopApplet.hxx>
+#include "DesktopApplet.hxx"
 #include <DiskUsageAppletConfigureDialog.hxx>
 #include <QTimer>
 #include <QMap>

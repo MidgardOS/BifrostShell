@@ -21,8 +21,8 @@
 #ifndef _WeatherApplet_H_
 #define _WeatherApplet_H_
 
-#include <DesktopApplet.hxx>
-#include <WeatherAppletConfigureDialog.hxx>
+#include "DesktopApplet.hxx"
+#include "WeatherAppletConfigureDialog.hxx"
 
 #include <QTimer>
 #include <QLabel>

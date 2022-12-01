@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <TaskBar.hxx>
-#include <TaskBarButton.hxx>
+#include "TaskBar.hxx"
+#include "TaskBarButton.hxx"
 
 #include <KWindowSystem>
 

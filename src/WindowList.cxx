@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <WindowList.hxx>
-#include <PopupMenu.hxx>
+#include "WindowList.hxx"
+#include "PopupMenu.hxx"
 
 #include <QIcon>
 #include <QStyle>

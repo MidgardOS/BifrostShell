@@ -21,7 +21,7 @@
 #ifndef _TaskBar_H_
 #define _TaskBar_H_
 
-#include <DesktopPanel.hxx>
+#include "DesktopPanel.hxx"
 #include <QGridLayout>
 
 #include <kwindowinfo.h>

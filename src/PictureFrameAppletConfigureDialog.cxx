@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <PictureFrameAppletConfigureDialog.hxx>
-#include <PictureFrameApplet.hxx>
+#include "PictureFrameAppletConfigureDialog.hxx"
+#include "PictureFrameApplet.hxx"
 
 //--------------------------------------------------------------------------------
 

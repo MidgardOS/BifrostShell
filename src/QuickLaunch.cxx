@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QuickLaunch.hxx>
+#include "QuickLaunch.hxx"
 
 #include <QFrame>
 #include <QIcon>

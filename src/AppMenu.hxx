@@ -21,8 +21,8 @@
 #ifndef _AppMenu_H_
 #define _AppMenu_H_
 
-#include <Launcher.hxx>
-#include <DesktopPanel.hxx>
+#include "Launcher.hxx"
+#include "DesktopPanel.hxx"
 
 #include <QPushButton>
 #include <QToolButton>

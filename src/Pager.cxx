@@ -18,9 +18,9 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Pager.hxx>
-#include <PagerButton.hxx>
-#include <DesktopPanel.hxx>
+#include "Pager.hxx"
+#include "PagerButton.hxx"
+#include "DesktopPanel.hxx"
 
 #include <QGridLayout>
 #include <QButtonGroup>

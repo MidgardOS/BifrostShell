@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <SysTrayNotifyItem.hxx>
+#include "SysTrayNotifyItem.hxx"
 
 #include <statusnotifieritem_interface.h>
 

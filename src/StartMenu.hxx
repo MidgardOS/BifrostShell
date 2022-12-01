@@ -26,7 +26,7 @@
 
 #include <KServiceGroup>
 
-#include <DesktopPanel.hxx>
+#include "DesktopPanel.hxx"
 
 class StartMenu : public QToolButton
 {

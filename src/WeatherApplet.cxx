@@ -18,9 +18,9 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <WeatherApplet.hxx>
-#include <WeatherAppletConfigureDialog.hxx>
-#include <Moon.hxx>
+#include "WeatherApplet.hxx"
+#include "WeatherAppletConfigureDialog.hxx"
+#include "Moon.hxx"
 
 #include <QJsonDocument>
 #include <QJsonObject>

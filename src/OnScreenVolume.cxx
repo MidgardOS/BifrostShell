@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <OnScreenVolume.hxx>
+#include "OnScreenVolume.hxx"
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>

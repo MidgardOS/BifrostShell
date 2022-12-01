@@ -18,14 +18,14 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DesktopWidget.hxx>
-#include <DesktopPanel.hxx>
-#include <WeatherApplet.hxx>
-#include <DiskUsageApplet.hxx>
-#include <PictureFrameApplet.hxx>
-#include <ConfigureDesktopDialog.hxx>
-#include <OnScreenVolume.hxx>
-#include <OnScreenBrightness.hxx>
+#include "DesktopWidget.hxx"
+#include "DesktopPanel.hxx"
+#include "WeatherApplet.hxx"
+#include "DiskUsageApplet.hxx"
+#include "PictureFrameApplet.hxx"
+#include "ConfigureDesktopDialog.hxx"
+#include "OnScreenVolume.hxx"
+#include "OnScreenBrightness.hxx"
 
 #include <QApplication>
 #include <QScreen>

@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <WeatherAppletConfigureDialog.hxx>
-#include <WeatherApplet.hxx>
+#include "WeatherAppletConfigureDialog.hxx"
+#include "WeatherApplet.hxx"
 
 #include <QUrl>
 #include <QStandardPaths>

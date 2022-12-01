@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <TaskBarButton.hxx>
+#include "TaskBarButton.hxx"
 
 #include <QHBoxLayout>
 #include <QLabel>

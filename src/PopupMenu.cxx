@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <PopupMenu.hxx>
+#include "PopupMenu.hxx"
 
 #include <QMouseEvent>
 #include <QDrag>

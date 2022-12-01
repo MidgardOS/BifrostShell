@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <StartMenu.hxx>
-#include <PopupMenu.hxx>
+#include "StartMenu.hxx"
+#include "PopupMenu.hxx"
 
 #include <QAction>
 #include <QContextMenuEvent>

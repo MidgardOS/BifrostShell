@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DeviceNotifier.hxx>
-#include <DeviceList.hxx>
+#include "DeviceNotifier.hxx"
+#include "DeviceList.hxx"
 
 #include <QIcon>
 #include <QMouseEvent>

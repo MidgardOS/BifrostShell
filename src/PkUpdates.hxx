@@ -23,7 +23,7 @@
 
 // software updates via PackageKit
 
-#include <SysTrayItem.hxx>
+#include "SysTrayItem.hxx"
 
 #include <PackageKit/Daemon>
 

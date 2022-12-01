@@ -21,7 +21,7 @@
 #ifndef _PkUpdateList_H_
 #define _PkUpdateList_H_
 
-#include <PkUpdates.hxx>
+#include "PkUpdates.hxx"
 #include <QScrollArea>
 #include <QQueue>
 #include <QPointer>

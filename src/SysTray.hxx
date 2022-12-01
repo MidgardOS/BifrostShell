@@ -28,8 +28,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include <DesktopPanel.hxx>
-#include <SysTrayNotifyItem.hxx>
+#include "DesktopPanel.hxx"
+#include "SysTrayNotifyItem.hxx"
 
 class SysTray : public QFrame
 {

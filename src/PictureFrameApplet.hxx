@@ -21,8 +21,8 @@
 #ifndef _PictureFrameApplet_H_
 #define _PictureFrameApplet_H_
 
-#include <DesktopApplet.hxx>
-#include <PictureFrameAppletConfigureDialog.hxx>
+#include "DesktopApplet.hxx"
+#include "PictureFrameAppletConfigureDialog.hxx"
 #include <QPointer>
 
 class PictureFrameApplet : public DesktopApplet

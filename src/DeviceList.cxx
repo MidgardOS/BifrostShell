@@ -18,9 +18,9 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DeviceList.hxx>
-#include <IconButton.hxx>
-#include <Battery.hxx>
+#include "DeviceList.hxx"
+#include "IconButton.hxx"
+#include "Battery.hxx"
 
 #include <Solid/DeviceNotifier>
 #include <Solid/DeviceInterface>

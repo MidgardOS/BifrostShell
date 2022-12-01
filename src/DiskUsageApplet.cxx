@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <DiskUsageApplet.hxx>
+#include "DiskUsageApplet.hxx"
 
 #include <QLabel>
 #include <QProgressBar>

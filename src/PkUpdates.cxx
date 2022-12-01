@@ -18,8 +18,8 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <PkUpdates.hxx>
-#include <PkUpdateList.hxx>
+#include "PkUpdates.hxx"
+#include "PkUpdateList.hxx"
 
 #include <QIcon>
 #include <QDateTime>

@@ -36,7 +36,7 @@
 #include <KCMultiDialog>
 #include <KServiceAction>
 
-#include <KdeConnect.hxx>
+#include "KdeConnect.hxx"
 
 //--------------------------------------------------------------------------------
 

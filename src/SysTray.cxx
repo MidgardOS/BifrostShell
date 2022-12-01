@@ -18,16 +18,16 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <SysTray.hxx>
-#include <DBusTypes.hxx>
-#include <NotificationServer.hxx>
-#include <Network.hxx>
-#include <DeviceNotifier.hxx>
-#include <Battery.hxx>
-#include <Bluetooth.hxx>
+#include "SysTray.hxx"
+#include "DBusTypes.hxx"
+#include "NotificationServer.hxx"
+#include "Network.hxx"
+#include "DeviceNotifier.hxx"
+#include "Battery.hxx"
+#include "Bluetooth.hxx"
 
 #ifdef WITH_PACKAGEKIT
-#include <PkUpdates.hxx>
+#include "PkUpdates.hxx"
 #endif
 
 #include <QApplication>

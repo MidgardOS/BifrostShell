@@ -18,9 +18,9 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <AppMenu.hxx>
-#include <IconButton.hxx>
-#include <DesktopWidget.hxx>
+#include "AppMenu.hxx"
+#include "IconButton.hxx"
+#include "DesktopWidget.hxx"
 
 #include <QGridLayout>
 #include <QToolButton>
@@ -28,6 +28,9 @@
 #include <QDir>
 #include <QMimeDatabase>
 #include <QApplication>
+#include <QSizePolicy>
+#include <KF5/KConfigCore/KDesktopFile>
+#include <QToolButton>
 #include <QScreen>
 
 #include <KFileItem>

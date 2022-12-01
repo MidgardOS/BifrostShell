@@ -18,7 +18,7 @@
   along with BifrostShell.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <SysLoad.hxx>
+#include "SysLoad.hxx"
 
 #include <QFile>
 #include <QPainter>
