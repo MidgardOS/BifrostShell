@@ -41,7 +41,10 @@
 
 //--------------------------------------------------------------------------------
 
-DesktopPanel::DesktopPanel(QWidget *parent) : QFrame(parent, Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus) {
+DesktopPanel::DesktopPanel(QWidget *parent) : QFrame(parent,
+                                                     Qt::FramelessWindowHint |
+                                                     Qt::NoDropShadowWindowHint |
+                                                     Qt::WindowDoesNotAcceptFocus) {
     setAttribute(Qt::WA_AlwaysShowToolTips);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setWindowIcon(QIcon::fromTheme("BifrostShell"));

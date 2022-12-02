@@ -21,7 +21,7 @@ bifrostShellNotExists=$?
 if [[ ${bifrostShellNotExists} -eq 1 ]]; then
     cp @CMAKE_INSTALL_PREFIX@/@XDG_APPS_INSTALL_DIR@/org.kde.BifrostShell.desktop $configDir/autostart
 else
-    sed -i -e "s/Hidden=true/Hidden=false/" $liquidFileName
+    sed -i -e "s/Hidden=true/Hidden=false/" $bifrostShellFileName
 fi
 
 cat > $plasmaFileName <<EOF
@@ -36,7 +36,7 @@ else
 fi
 
 rm -f $plasmaFileName 
-if [[ $liquidNotExists -eq 1 ]]; then
+if [[ $bifrostShellNotExists -eq 1 ]]; then
     rm -f $configDir/autostart/org.kde.BifrostShell.desktop
 else
     sed -i -e "s/Hidden=false/Hidden=true/" ${bifrostShellFileName}
