@@ -60,7 +60,6 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, KDbusImageVector 
 
     if (argument.currentType() == QDBusArgument::ArrayType) {
         argument.beginArray();
-    
         while (! argument.atEnd()) {
             KDbusImageStruct pixmap;
             argument >> pixmap;

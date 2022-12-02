@@ -37,125 +37,120 @@
 
 //--------------------------------------------------------------------------------
 
-QuickLaunch::QuickLaunch(DesktopPanel *parent)
-  : Launcher(parent, "QuickLaunch")
-{
-  QFrame *frame = new QFrame;
-  frame->setFrameShape(QFrame::StyledPanel);
+QuickLaunch::QuickLaunch(DesktopPanel *parent) : Launcher(parent, "QuickLaunch") {
+    QFrame *frame = new QFrame;
+    frame->setFrameShape(QFrame::StyledPanel);
 
-  grid = new QGridLayout(frame);
-  grid->setContentsMargins(QMargins());
-  grid->setSpacing(2);
+    grid = new QGridLayout(frame);
+    grid->setContentsMargins(QMargins());
+    grid->setSpacing(2);
 
-  layout()->addWidget(frame);
-  loadConfig();
+    layout()->addWidget(frame);
+    loadConfig();
 
-  connect(parent, &DesktopPanel::rowsChanged, this, &QuickLaunch::fill);
-  connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &QuickLaunch::fill);
+    connect(parent, &DesktopPanel::rowsChanged, this, &QuickLaunch::fill);
+    connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &QuickLaunch::fill);
 }
 
 //--------------------------------------------------------------------------------
 
-void QuickLaunch::fill()
-{
-  const int MAX_ROWS = qobject_cast<DesktopPanel *>(parentWidget())->getRows();
+void QuickLaunch::fill() {
+    const int MAX_ROWS = qobject_cast<DesktopPanel *>(parentWidget())->getRows();
 
-  QLayoutItem *child;
-  while ( (child = grid->takeAt(0)) )
-  {
-    delete child->widget();
-    delete child;
-  }
-
-  if ( !dirPath.isEmpty() )
-  {
-    QDir dir(dirPath);
-    QFileInfoList entries = dir.entryInfoList(QDir::Files);
-    int row = 0, col = 0;
-
-    for (const QFileInfo &info : entries)
-    {
-      QUrl url(QUrl::fromLocalFile(info.absoluteFilePath()));
-      QIcon icon;
-      QString name = info.fileName();
-
-      KFileItem item(url);
-
-      if ( item.isDesktopFile() )
-      {
-        KDesktopFile desktopFile(info.absoluteFilePath());
-        if ( desktopFile.noDisplay() )
-          continue;
-
-        name = desktopFile.readName();
-        if ( name.isEmpty() )
-          name = desktopFile.readGenericName();
-
-        QString iconName = desktopFile.readIcon();
-        icon = QIcon::fromTheme(iconName.isEmpty() ? name : iconName);
-      }
-      else
-      {
-        QMimeDatabase db;
-        icon = QIcon::fromTheme(db.mimeTypeForFile(info.absoluteFilePath()).iconName());
-      }
-
-      QToolButton *button = new QToolButton(this);
-      button->setAutoRaise(true);
-      button->setIcon(icon);
-      button->setToolTip(name);
-
-      if ( MAX_ROWS > 1 )
-        button->setIconSize(QSize(22, 22));
-      else
-      {
-        int size = KIconLoader::global()->currentSize(KIconLoader::Panel);
-        button->setIconSize(QSize(size, size));
-      }
-
-      button->setFixedHeight(button->sizeHint().height() - 2);
-
-      connect(button, &QToolButton::clicked, [url]() { new KRun(url, nullptr); });
-
-      grid->addWidget(button, row, col, Qt::AlignCenter);
-
-      row = (row + 1) % MAX_ROWS;
-      if ( row == 0 ) col++;
-
-      // limit width in case one selects a directory with too many items
-      const int MAX_COLS = 15;
-      if ( col > MAX_COLS )
-        break;
+    QLayoutItem *child;
+    while ( (child = grid->takeAt(0)) ) {
+        delete child->widget();
+        delete child;
     }
-  }
 
-  if ( grid->count() == 0 )
-  {
-    // add default entry
-    QToolButton *button = new QToolButton(this);
-    button->setAutoRaise(true);
-    button->setIcon(QIcon::fromTheme("user-home"));
-    button->setIconSize(QSize(22, 22));
-    button->setFixedHeight(button->sizeHint().height() - 2);
-    button->setToolTip(QStandardPaths::displayName(QStandardPaths::HomeLocation));
-    QUrl url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
-    connect(button, &QToolButton::clicked, [url]() { new KRun(url, nullptr); });
+    if (! dirPath.isEmpty()) {
+        QDir dir(dirPath);
+        QFileInfoList entries = dir.entryInfoList(QDir::Files);
+        int row = 0, col = 0;
 
-    grid->addWidget(button, 0, 0, Qt::AlignCenter);
+        for (const QFileInfo &info : entries) {
+            QUrl url(QUrl::fromLocalFile(info.absoluteFilePath()));
+            QIcon icon;
+            QString name = info.fileName();
 
-    button = new QToolButton(this);
-    button->setAutoRaise(true);
-    button->setIcon(QIcon::fromTheme("internet-web-browser"));
-    button->setIconSize(QSize(22, 22));
-    button->setFixedHeight(button->sizeHint().height() - 2);
-    button->setToolTip(i18n("Web Browser"));
-    connect(button, &QToolButton::clicked, []() { new KRun(QUrl("http://www.kde.org"), nullptr); });
+            KFileItem item(url);
 
-    if ( MAX_ROWS == 1 )
-      grid->addWidget(button, 0, 1, Qt::AlignCenter);
-    else
-      grid->addWidget(button, 1, 0, Qt::AlignCenter);
-  }
+            if (item.isDesktopFile()) {
+                KDesktopFile desktopFile(info.absoluteFilePath());
+                if (desktopFile.noDisplay()) {
+                    continue;
+                }
+
+                name = desktopFile.readName();
+                if (name.isEmpty()) {
+                    name = desktopFile.readGenericName();
+                }
+
+                QString iconName = desktopFile.readIcon();
+                icon = QIcon::fromTheme(iconName.isEmpty() ? name : iconName);
+            } else {
+                QMimeDatabase db;
+                icon = QIcon::fromTheme(db.mimeTypeForFile(info.absoluteFilePath()).iconName());
+            }
+
+            QToolButton *button = new QToolButton(this);
+            button->setAutoRaise(true);
+            button->setIcon(icon);
+            button->setToolTip(name);
+
+            if (MAX_ROWS > 1) {
+                button->setIconSize(QSize(22, 22));
+            } else {
+                int size = KIconLoader::global()->currentSize(KIconLoader::Panel);
+                button->setIconSize(QSize(size, size));
+            }
+
+            button->setFixedHeight(button->sizeHint().height() - 2);
+
+            connect(button, &QToolButton::clicked, [url]() { new KRun(url, nullptr); });
+
+            grid->addWidget(button, row, col, Qt::AlignCenter);
+
+            row = (row + 1) % MAX_ROWS;
+            if (row == 0) {
+                col++;
+            }
+
+            // limit width in case one selects a directory with too many items
+            const int MAX_COLS = 15;
+            if (col > MAX_COLS) {
+                break;
+            }
+        }
+    }
+
+    if (grid->count() == 0) {
+        // add default entry
+        QToolButton *button = new QToolButton(this);
+        button->setAutoRaise(true);
+        button->setIcon(QIcon::fromTheme("user-home"));
+        button->setIconSize(QSize(22, 22));
+        button->setFixedHeight(button->sizeHint().height() - 2);
+        button->setToolTip(QStandardPaths::displayName(QStandardPaths::HomeLocation));
+        QUrl url = QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        connect(button, &QToolButton::clicked, [url]() { new KRun(url, nullptr); });
+
+        grid->addWidget(button, 0, 0, Qt::AlignCenter);
+
+        button = new QToolButton(this);
+        button->setAutoRaise(true);
+        button->setIcon(QIcon::fromTheme("internet-web-browser"));
+        button->setIconSize(QSize(22, 22));
+        button->setFixedHeight(button->sizeHint().height() - 2);
+        button->setToolTip(i18n("Web Browser"));
+        connect(button, &QToolButton::clicked, []() { new KRun(QUrl("http://www.kde.org"), nullptr); });
+
+        if (MAX_ROWS == 1) {
+            grid->addWidget(button, 0, 1, Qt::AlignCenter);
+        } else {
+            grid->addWidget(button, 1, 0, Qt::AlignCenter);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------

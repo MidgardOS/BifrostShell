@@ -65,11 +65,11 @@ int main(int argc, char **argv) {
     DesktopWidget desktop;
     desktop.show();
 
-    QDBusMessage ksplashProgressMessage =
-        QDBusMessage::createMethodCall(QStringLiteral("org.kde.KSplash"),
-                                       QStringLiteral("/KSplash"),
-                                       QStringLiteral("org.kde.KSplash"),
-                                       QStringLiteral("setStage"));
+    QDBusMessage ksplashProgressMessage = QDBusMessage::createMethodCall(
+                                            QStringLiteral("org.kde.KSplash"),
+                                            QStringLiteral("/KSplash"),
+                                            QStringLiteral("org.kde.KSplash"),
+                                            QStringLiteral("setStage"));
     ksplashProgressMessage.setArguments(QList<QVariant>() << QStringLiteral("desktop"));
     QDBusConnection::sessionBus().asyncCall(ksplashProgressMessage);
 

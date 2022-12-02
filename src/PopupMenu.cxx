@@ -29,51 +29,45 @@
 
 //--------------------------------------------------------------------------------
 
-void PopupMenu::mousePressEvent(QMouseEvent *event)
-{
-  if ( event->button() == Qt::LeftButton )
-    dragStartPos = event->pos();
+void PopupMenu::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        dragStartPos = event->pos();
+    }
 
-  QMenu::mousePressEvent(event);
+    QMenu::mousePressEvent(event);
 }
 
 //--------------------------------------------------------------------------------
 
-void PopupMenu::mouseMoveEvent(QMouseEvent *event)
-{
-  if ( (event->buttons() == Qt::LeftButton) && (dragStartPos != QPoint(-1, -1)) &&
-       (event->pos() - dragStartPos).manhattanLength() > QGuiApplication::styleHints()->startDragDistance() )
-  {
-    dragStartPos = QPoint(-1, -1);
-    QAction *action = actionAt(event->pos());
-    if ( action && !action->menu() && action->data().isValid() )
-    {
-      event->accept();
+void PopupMenu::mouseMoveEvent(QMouseEvent *event) {
+    if ((event->buttons() == Qt::LeftButton) && (dragStartPos != QPoint(-1, -1)) &&
+        (event->pos() - dragStartPos).manhattanLength() > QGuiApplication::styleHints()->startDragDistance()) {
+        dragStartPos = QPoint(-1, -1);
+        QAction *action = actionAt(event->pos());
+        if (action && !action->menu() && action->data().isValid()) {
+            event->accept();
 
-      QDrag *drag = new QDrag(this);
-      QMimeData *mimeData = new QMimeData;
-      Qt::DropActions dropAction;
+            QDrag *drag = new QDrag(this);
+            QMimeData *mimeData = new QMimeData;
+            Qt::DropActions dropAction;
 
-      if ( static_cast<QMetaType::Type>(action->data().type()) == QMetaType::QUrl )
-      {
-        mimeData->setUrls(QList<QUrl>() << action->data().toUrl());
-        dropAction = Qt::CopyAction;
-      }
-      else if ( static_cast<QMetaType::Type>(action->data().type()) == QMetaType::Int )
-      {
-        mimeData->setData("application/x-winId", QByteArray::number(action->data().toInt()));
-        dropAction = Qt::MoveAction;
-      }
-      else
-        qDebug() << "illegal data in PopupMenu action";  // should never come here
+            if (static_cast<QMetaType::Type>(action->data().type()) == QMetaType::QUrl) {
+                mimeData->setUrls(QList<QUrl>() << action->data().toUrl());
+                dropAction = Qt::CopyAction;
+            } else if (static_cast<QMetaType::Type>(action->data().type()) == QMetaType::Int) {
+                mimeData->setData("application/x-winId", QByteArray::number(action->data().toInt()));
+                dropAction = Qt::MoveAction;
+            } else {
+                qDebug() << "illegal data in PopupMenu action";  // should never come here
+            }
 
-      drag->setMimeData(mimeData);
-      drag->setPixmap(action->icon().pixmap(32, 32));
-      drag->exec(dropAction);
+            drag->setMimeData(mimeData);
+            drag->setPixmap(action->icon().pixmap(32, 32));
+            drag->exec(dropAction);
+        }
+    } else {
+        QMenu::mouseMoveEvent(event);
     }
-  }
-  else
-    QMenu::mouseMoveEvent(event);
 }
 
 //--------------------------------------------------------------------------------

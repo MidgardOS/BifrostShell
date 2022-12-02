@@ -39,123 +39,129 @@
 
 //--------------------------------------------------------------------------------
 
-Pager::Pager(DesktopPanel *parent)
-  : QWidget(parent)
-{
-  group = new QButtonGroup(this);
+Pager::Pager(DesktopPanel *parent) : QWidget(parent) {
+    group = new QButtonGroup(this);
 
-  QGridLayout *grid = new QGridLayout(this);
-  grid->setSpacing(2);
-  grid->setContentsMargins(QMargins());
+    QGridLayout *grid = new QGridLayout(this);
+    grid->setSpacing(2);
+    grid->setContentsMargins(QMargins());
 
-  connect(KWindowSystem::self(), &KWindowSystem::numberOfDesktopsChanged, this, &Pager::fill);
+    connect(KWindowSystem::self(), &KWindowSystem::numberOfDesktopsChanged, this, &Pager::fill);
 
-  connect(KWindowSystem::self(), &KWindowSystem::currentDesktopChanged,
-          [this]()
-          {
-            if ( KWindowSystem::currentDesktop() <= buttons.count() )
-              buttons[KWindowSystem::currentDesktop() - 1]->setChecked(true);
-          }
-         );
+    connect(
+        KWindowSystem::self(),
+        &KWindowSystem::currentDesktopChanged,
+        [this]() {
+            if (KWindowSystem::currentDesktop() <= buttons.count()) {
+                buttons[KWindowSystem::currentDesktop() - 1]->setChecked(true);
+            }
+        }
+    );
 
-  connect(parent, &DesktopPanel::rowsChanged, this, &Pager::fill);
+    connect(parent, &DesktopPanel::rowsChanged, this, &Pager::fill);
 
-  KConfig config;
-  KConfigGroup group = config.group("Pager");
-  if ( !group.hasKey("showIcons") )  // create config entry so that one knows it exists
-    group.writeEntry("showIcons", true);
+    KConfig config;
+    KConfigGroup group = config.group("Pager");
+    if (! group.hasKey("showIcons")) {
+        // create config entry so that one knows it exists
+        group.writeEntry("showIcons", true);
+    }
 
-  showIcons  = group.readEntry("showIcons", true);
+    showIcons  = group.readEntry("showIcons", true);
 
-  fill();
+    fill();
 
-  QAction *action = new QAction(this);
-  action->setIcon(QIcon::fromTheme("configure"));
-  action->setText(i18n("Configure Virtual Desktops..."));
-  addAction(action);
-  connect(action, &QAction::triggered,
-          [this]()
-          {
+    QAction *action = new QAction(this);
+    action->setIcon(QIcon::fromTheme("configure"));
+    action->setText(i18n("Configure Virtual Desktops..."));
+    addAction(action);
+    connect(
+        action,
+        &QAction::triggered,
+        [this]() {
             auto dialog = new KCMultiDialog(parentWidget());
             dialog->setAttribute(Qt::WA_DeleteOnClose);
             dialog->setWindowTitle(i18n("Configure Virtual Desktops"));
 
             KCModuleInfo module("kcm_kwin_virtualdesktops");
-            if ( module.service() )
-              dialog->addModule("kcm_kwin_virtualdesktops");
-            else
-              dialog->addModule("desktop");  // in older KDE versions
+            if (module.service()) {
+                dialog->addModule("kcm_kwin_virtualdesktops");
+            } else {
+                dialog->addModule("desktop");  // in older KDE versions
+            }
 
             dialog->adjustSize();
             dialog->show();
-          }
-         );
-  setContextMenuPolicy(Qt::ActionsContextMenu);
+        }
+    );
+    setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 //--------------------------------------------------------------------------------
 
-void Pager::fill()
-{
-  qDeleteAll(buttons);
-  buttons.clear();
+void Pager::fill() {
+    qDeleteAll(buttons);
+    buttons.clear();
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
-  NETRootInfo ri(QX11Info::connection(), NET::Property(), NET::WM2DesktopLayout);
+    NETRootInfo ri(QX11Info::connection(), NET::Property(), NET::WM2DesktopLayout);
 #else
-  NETRootInfo ri(QX11Info::connection(), 0, NET::WM2DesktopLayout);
+    NETRootInfo ri(QX11Info::connection(), 0, NET::WM2DesktopLayout);
 #endif
 
-  int row = 0, col = 0;
-  const int MAX_COLUMNS = std::max(1, ri.desktopLayoutColumnsRows().width());
+    int row = 0, col = 0;
+    const int MAX_COLUMNS = std::max(1, ri.desktopLayoutColumnsRows().width());
 
-  for (int i = 1; i <= KWindowSystem::numberOfDesktops(); i++)
-  {
-    PagerButton *b = new PagerButton(i, qobject_cast<DesktopPanel *>(parentWidget()), showIcons);
+    for (int i = 1; i <= KWindowSystem::numberOfDesktops(); i++) {
+        PagerButton *b = new PagerButton(i, qobject_cast<DesktopPanel *>(parentWidget()), showIcons);
 
-    b->setCheckable(true);
-    b->setFocusPolicy(Qt::NoFocus);
-    group->addButton(b);
-    buttons.append(b);
+        b->setCheckable(true);
+        b->setFocusPolicy(Qt::NoFocus);
+        group->addButton(b);
+        buttons.append(b);
 
-    if ( i == KWindowSystem::currentDesktop() )
-      b->setChecked(true);
+        if (i == KWindowSystem::currentDesktop()) {
+            b->setChecked(true);
+        }
 
-    connect(b, &PagerButton::clicked, this, &Pager::changeDesktop);
+        connect(b, &PagerButton::clicked, this, &Pager::changeDesktop);
 
-    static_cast<QGridLayout *>(layout())->addWidget(b, row, col);
-    col = (col + 1) % MAX_COLUMNS;
-    if ( col == 0 ) row++;
-  }
+        static_cast<QGridLayout *>(layout())->addWidget(b, row, col);
+        col = (col + 1) % MAX_COLUMNS;
+        if (col == 0) {
+            row++;
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void Pager::changeDesktop(bool checked)
-{
-  if ( !checked )
-    return;
+void Pager::changeDesktop(bool checked) {
+    if (! checked) {
+        return;
+    }
 
-  int desktopNum = qobject_cast<PagerButton *>(sender())->getDesktop();
+    int desktopNum = qobject_cast<PagerButton *>(sender())->getDesktop();
 
-  if ( KWindowSystem::currentDesktop() == desktopNum )
-    KWindowSystem::setShowingDesktop(!KWindowSystem::showingDesktop());
-  else
-    KWindowSystem::setCurrentDesktop(desktopNum);
+    if (KWindowSystem::currentDesktop() == desktopNum) {
+        KWindowSystem::setShowingDesktop(!KWindowSystem::showingDesktop());
+    } else {
+        KWindowSystem::setCurrentDesktop(desktopNum);
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void Pager::wheelEvent(QWheelEvent *event)
-{
-  int desktopNum = KWindowSystem::currentDesktop() - 1 + KWindowSystem::numberOfDesktops();
+void Pager::wheelEvent(QWheelEvent *event) {
+    int desktopNum = KWindowSystem::currentDesktop() - 1 + KWindowSystem::numberOfDesktops();
 
-  if ( event->angleDelta().y() > 0 )
-    desktopNum++;
-  else
-    desktopNum--;
+    if (event->angleDelta().y() > 0) {
+        desktopNum++;
+    } else {
+        desktopNum--;
+    }
 
-  KWindowSystem::setCurrentDesktop((desktopNum % KWindowSystem::numberOfDesktops()) + 1);
+    KWindowSystem::setCurrentDesktop((desktopNum % KWindowSystem::numberOfDesktops()) + 1);
 }
 
 //--------------------------------------------------------------------------------

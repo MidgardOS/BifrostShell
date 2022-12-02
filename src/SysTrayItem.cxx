@@ -31,62 +31,63 @@
 
 //--------------------------------------------------------------------------------
 
-SysTrayItem::SysTrayItem(QWidget *parent, const QString &icon)
-  : QLabel(parent), iconName(icon)
-{
-  setFixedSize(QSize(22, 22));
+SysTrayItem::SysTrayItem(QWidget *parent, const QString &icon) : QLabel(parent), iconName(icon) {
+    setFixedSize(QSize(22, 22));
 
-  if ( !iconName.isEmpty() )
-  {
-    setPixmap(QIcon::fromTheme(iconName).pixmap(size()));
+    if (! iconName.isEmpty()) {
+        setPixmap(QIcon::fromTheme(iconName).pixmap(size()));
 
-    connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this,
-            [this]() { setPixmap(QIcon::fromTheme(iconName).pixmap(size())); });
-  }
+        connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this,
+                [this]() {
+                    setPixmap(QIcon::fromTheme(iconName).pixmap(size()));
+                }
+        );
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void SysTrayItem::mousePressEvent(QMouseEvent *event)
-{
-  if ( event->button() != Qt::LeftButton )
-    return;
+void SysTrayItem::mousePressEvent(QMouseEvent *event) {
+    if (event->button() != Qt::LeftButton) {
+        return;
+    }
 
-  toggleDetailsList();
+    toggleDetailsList();
 }
 
 //--------------------------------------------------------------------------------
 
-void SysTrayItem::showDetailsList()
-{
-  QWidget *detailsList = getDetailsList();
+void SysTrayItem::showDetailsList() {
+    QWidget *detailsList = getDetailsList();
 
-  if ( !detailsList )
-    return;
+    if (! detailsList) {
+        return;
+    }
 
-  QPoint point = mapToGlobal(pos());
-  QRect screen = DesktopWidget::availableGeometry();
-  QSize size = detailsList->windowHandle() ? detailsList->size() : detailsList->sizeHint();
-  point.setX(std::min(point.x(), screen.x() + screen.width() - size.width()));
-  point.setY(screen.bottom() - size.height());
-  detailsList->move(point);
-  detailsList->show();
-  KWindowSystem::raiseWindow(detailsList->winId());
+    QPoint point = mapToGlobal(pos());
+    QRect screen = DesktopWidget::availableGeometry();
+    QSize size = detailsList->windowHandle() ? detailsList->size() : detailsList->sizeHint();
+    point.setX(std::min(point.x(), screen.x() + screen.width() - size.width()));
+    point.setY(screen.bottom() - size.height());
+    detailsList->move(point);
+    detailsList->show();
+    KWindowSystem::raiseWindow(detailsList->winId());
 }
 
 //--------------------------------------------------------------------------------
 
-void SysTrayItem::toggleDetailsList()
-{
-  QWidget *detailsList = getDetailsList();
+void SysTrayItem::toggleDetailsList() {
+    QWidget *detailsList = getDetailsList();
 
-  if ( !detailsList )
-    return;
+    if (! detailsList) {
+        return;
+    }
 
-  if ( detailsList->isVisible() )
-    detailsList->close();
-  else
-    showDetailsList();
+    if (detailsList->isVisible()) {
+        detailsList->close();
+    } else {
+        showDetailsList();\
+    }
 }
 
 //--------------------------------------------------------------------------------

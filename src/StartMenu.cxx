@@ -34,151 +34,157 @@
 
 //--------------------------------------------------------------------------------
 
-StartMenu::StartMenu(DesktopPanel *parent)
-  : QToolButton(parent)
-{
-  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+StartMenu::StartMenu(DesktopPanel *parent) : QToolButton(parent) {
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-  setThemeIcon("BifrostShell");
+    setThemeIcon("BifrostShell");
 
-  popup = new PopupMenu(this);
-  connect(this, &QToolButton::pressed, this, &StartMenu::showMenu);
+    popup = new PopupMenu(this);
+    connect(this, &QToolButton::pressed, this, &StartMenu::showMenu);
 
-  fill();
-  adjustIconSize();
+    fill();
+    adjustIconSize();
 
-  connect(KSycoca::self(), SIGNAL(databaseChanged()), this, SLOT(fill()));
-  connect(parent, &DesktopPanel::rowsChanged, this, &StartMenu::adjustIconSize);
-  connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &StartMenu::adjustIconSize);
+    connect(KSycoca::self(), SIGNAL(databaseChanged()), this, SLOT(fill()));
+    connect(parent, &DesktopPanel::rowsChanged, this, &StartMenu::adjustIconSize);
+    connect(KIconLoader::global(), &KIconLoader::iconLoaderSettingsChanged, this, &StartMenu::adjustIconSize);
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::adjustIconSize()
-{
-  const int MAX_ROWS = qobject_cast<DesktopPanel *>(parentWidget())->getRows();
+void StartMenu::adjustIconSize() {
+    const int MAX_ROWS = qobject_cast<DesktopPanel *>(parentWidget())->getRows();
 
-  if ( MAX_ROWS > 1 )
-    setIconSize(QSize(48, 48));
-  else
-  {
-    int size = KIconLoader::global()->currentSize(KIconLoader::Panel);
-    setIconSize(QSize(size, size));
-  }
+    if (MAX_ROWS > 1) {
+        setIconSize(QSize(48, 48));
+    } else {
+        int size = KIconLoader::global()->currentSize(KIconLoader::Panel);
+        setIconSize(QSize(size, size));
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::setThemeIcon(const QString &icon)
-{
-  themeIcon = icon;
-  setIcon(QIcon::fromTheme(themeIcon));
+void StartMenu::setThemeIcon(const QString &icon) {
+    themeIcon = icon;
+    setIcon(QIcon::fromTheme(themeIcon));
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::fill()
-{
-  popup->clear();
+void StartMenu::fill() {
+    popup->clear();
 
-  fillFromGroup(popup, KServiceGroup::root());
+    fillFromGroup(popup, KServiceGroup::root());
 
-  popup->addSeparator();
+    popup->addSeparator();
 
-  // add important actions
-  QAction *action = popup->addAction(QIcon::fromTheme("system-switch-user"), i18n("Switch User"));
-  connect(action, &QAction::triggered,
-          []()
-          {
-            QDBusConnection::sessionBus().send(
-                QDBusMessage::createMethodCall("org.kde.ksmserver", "/KSMServer",
-                                               "org.kde.KSMServerInterface", "openSwitchUserDialog"));
-          });
+    // add important actions
+    QAction *action = popup->addAction(QIcon::fromTheme("system-switch-user"), i18n("Switch User"));
+    connect(action, &QAction::triggered,
+            []() {
+                QDBusConnection::sessionBus().send(
+                    QDBusMessage::createMethodCall(
+                        "org.kde.ksmserver",
+                        "/KSMServer",
+                        "org.kde.KSMServerInterface",
+                        "openSwitchUserDialog"
+                    )
+                );
+            }
+    );
 
-  KService::Ptr sysSettings = KService::serviceByDesktopName("systemsettings");
-  if ( sysSettings )
-  {
-    action = popup->addAction(QIcon::fromTheme(sysSettings->icon()), sysSettings->name());
-    connect(action, &QAction::triggered, [this, sysSettings]() { KRun::runApplication(*sysSettings, QList<QUrl>(), this); });
-  }
+    KService::Ptr sysSettings = KService::serviceByDesktopName("systemsettings");
+    if (sysSettings) {
+        action = popup->addAction(QIcon::fromTheme(sysSettings->icon()), sysSettings->name());
+        connect(action, &QAction::triggered, [this, sysSettings]() { KRun::runApplication(*sysSettings, QList<QUrl>(), this); });
+    }
 
-  action = popup->addAction(QIcon::fromTheme("system-run"), i18n("Run Command..."));
-  connect(action, &QAction::triggered,
-          []()
-          {
-            QDBusConnection::sessionBus().send(
-                QDBusMessage::createMethodCall("org.kde.krunner", "/App",
-                                               "org.kde.krunner.App", "display"));
-          });
+    action = popup->addAction(QIcon::fromTheme("system-run"), i18n("Run Command..."));
+    connect(action, &QAction::triggered,
+            []() {
+                QDBusConnection::sessionBus().send(
+                    QDBusMessage::createMethodCall(
+                        "org.kde.krunner",
+                        "/App",
+                        "org.kde.krunner.App",
+                        "display"
+                    )
+                );
+            }
+    );
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::fillFromGroup(QMenu *menu, KServiceGroup::Ptr group)
-{
-  if ( !group || !group->isValid() )
-    return;
+void StartMenu::fillFromGroup(QMenu *menu, KServiceGroup::Ptr group) {
+    if (! group || !group->isValid()) {
+        return;
+    }
 
-  QList<KServiceGroup::Ptr> groupEntries =
-      group->groupEntries(static_cast<KServiceGroup::EntriesOptions>(KServiceGroup::SortEntries |
-                                                                     KServiceGroup::ExcludeNoDisplay));
+    QList<KServiceGroup::Ptr> groupEntries = group->groupEntries(
+        static_cast<KServiceGroup::EntriesOptions>(
+            KServiceGroup::SortEntries | KServiceGroup::ExcludeNoDisplay
+        )
+    );
 
-  for (KServiceGroup::Ptr groupEntry : groupEntries)
-  {
-    if ( groupEntry->childCount() == 0 )
-      continue;
+    for (KServiceGroup::Ptr groupEntry : groupEntries) {
+        if (groupEntry->childCount() == 0) {
+            continue;
+        }
 
-    QMenu *submenu = new PopupMenu(menu);
-    menu->addMenu(submenu);
-    submenu->setTitle(groupEntry->caption());
-    submenu->setIcon(QIcon::fromTheme(groupEntry->icon()));
-    fillFromGroup(submenu, groupEntry);
-  }
+        QMenu *submenu = new PopupMenu(menu);
+        menu->addMenu(submenu);
+        submenu->setTitle(groupEntry->caption());
+        submenu->setIcon(QIcon::fromTheme(groupEntry->icon()));
+        fillFromGroup(submenu, groupEntry);
+    }
 
-  KService::List serviceEntries =
-      group->serviceEntries(static_cast<KServiceGroup::EntriesOptions>(KServiceGroup::SortEntries |
-                                                                       KServiceGroup::ExcludeNoDisplay));
+    KService::List serviceEntries = group->serviceEntries(
+        static_cast<KServiceGroup::EntriesOptions>(
+            KServiceGroup::SortEntries | KServiceGroup::ExcludeNoDisplay
+        )
+    );
 
-  for (KService::Ptr serviceEntry : serviceEntries)
-  {
-    if ( !serviceEntry->isType(KST_KService) )
-      continue;
+    for (KService::Ptr serviceEntry : serviceEntries) {
+        if (! serviceEntry->isType(KST_KService)) {
+            continue;
+        }
 
-    QIcon icon = QIcon::fromTheme(serviceEntry->icon());
-    QString text = serviceEntry->name();
-    if ( !serviceEntry->genericName().isEmpty() && (serviceEntry->genericName() != serviceEntry->name()) )
-      text += QString(" (%1)").arg(serviceEntry->genericName());
+        QIcon icon = QIcon::fromTheme(serviceEntry->icon());
+        QString text = serviceEntry->name();
+        if (! serviceEntry->genericName().isEmpty() && (serviceEntry->genericName() != serviceEntry->name())) {
+            text += QString(" (%1)").arg(serviceEntry->genericName());
+        }
 
-    QAction *action = menu->addAction(icon, text);
-    action->setData(QUrl::fromLocalFile(serviceEntry->entryPath()));
+        QAction *action = menu->addAction(icon, text);
+        action->setData(QUrl::fromLocalFile(serviceEntry->entryPath()));
 
-    action->setToolTip(static_cast<const KService *>(serviceEntry.data())->comment());
+        action->setToolTip(static_cast<const KService *>(serviceEntry.data())->comment());
 
-    connect(action, &QAction::triggered, [serviceEntry]() { KRun::runApplication(*serviceEntry, QList<QUrl>(), nullptr); });
-  }
+        connect(action, &QAction::triggered, [serviceEntry]() { KRun::runApplication(*serviceEntry, QList<QUrl>(), nullptr); });
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::contextMenuEvent(QContextMenuEvent *event)
-{
-  QMenu menu;
+void StartMenu::contextMenuEvent(QContextMenuEvent *event) {
+    QMenu menu;
 
-  QAction *action = menu.addAction(QIcon::fromTheme("configure"), i18n("Configure Menu..."));
-  connect(action, &QAction::triggered, []() { KRun::runCommand(QString("kmenuedit"), nullptr); });
+    QAction *action = menu.addAction(QIcon::fromTheme("configure"), i18n("Configure Menu..."));
+    connect(action, &QAction::triggered, []() { KRun::runCommand(QString("kmenuedit"), nullptr); });
 
-  menu.exec(event->globalPos());
+    menu.exec(event->globalPos());
 }
 
 //--------------------------------------------------------------------------------
 
-void StartMenu::showMenu()
-{
-  popup->adjustSize();
-  QPoint p = mapToGlobal(QPoint(0, 0));
-  popup->move(p.x(), p.y() - popup->sizeHint().height());
-  popup->exec();
-  setDown(false);
+void StartMenu::showMenu() {
+    popup->adjustSize();
+    QPoint p = mapToGlobal(QPoint(0, 0));
+    popup->move(p.x(), p.y() - popup->sizeHint().height());
+    popup->exec();
+    setDown(false);
 }
 
 //--------------------------------------------------------------------------------

@@ -28,96 +28,86 @@
 
 //--------------------------------------------------------------------------------
 
-PictureFrameApplet::PictureFrameApplet(QWidget *parent, const QString &theId)
-  : DesktopApplet(parent, theId)
-{
-  setAutoFillBackground(true);
-  setContentsMargins(2, 2, 2, 2);
+PictureFrameApplet::PictureFrameApplet(QWidget *parent, const QString &theId) : DesktopApplet(parent, theId) {
+    setAutoFillBackground(true);
+    setContentsMargins(2, 2, 2, 2);
 }
 
 //--------------------------------------------------------------------------------
 
-QSize PictureFrameApplet::sizeHint() const
-{
-  return QSize(400, 400);
+QSize PictureFrameApplet::sizeHint() const {
+    return QSize(400, 400);
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameApplet::resizeEvent(QResizeEvent *)
-{
-  loadImage();
+void PictureFrameApplet::resizeEvent(QResizeEvent *) {
+    loadImage();
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameApplet::paintEvent(QPaintEvent *)
-{
-  QPainter painter(this);
+void PictureFrameApplet::paintEvent(QPaintEvent *) {
+    QPainter painter(this);
 
-  painter.drawPixmap(contentsRect().x() + (contentsRect().width() - pixmap.width()) / 2,
-                     contentsRect().y() + (contentsRect().height() - pixmap.height()) / 2,
-                     pixmap);
+    painter.drawPixmap(contentsRect().x() + (contentsRect().width() - pixmap.width()) / 2,
+                       contentsRect().y() + (contentsRect().height() - pixmap.height()) / 2,
+                       pixmap
+    );
 
-  const int frameWidth = contentsMargins().left();
-  const int fw2 = frameWidth / 2;
+    const int frameWidth = contentsMargins().left();
+    const int fw2 = frameWidth / 2;
 
-  QPen pen(palette().color(foregroundRole()), frameWidth);
-  pen.setJoinStyle(Qt::MiterJoin);
-  painter.setPen(pen);
-  painter.drawRect(rect().adjusted(fw2, fw2, -fw2, -fw2));
+    QPen pen(palette().color(foregroundRole()), frameWidth);
+    pen.setJoinStyle(Qt::MiterJoin);
+    painter.setPen(pen);
+    painter.drawRect(rect().adjusted(fw2, fw2, -fw2, -fw2));
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameApplet::loadConfig()
-{
-  KConfig config;
-  KConfigGroup group = config.group(id);
-  imagePath = group.readEntry("imagePath", QString());
+void PictureFrameApplet::loadConfig() {
+    KConfig config;
+    KConfigGroup group = config.group(id);
+    imagePath = group.readEntry("imagePath", QString());
 
-  DesktopApplet::loadConfig();
-  loadImage();
+    DesktopApplet::loadConfig();
+    loadImage();
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameApplet::loadImage()
-{
-  pixmap.load(imagePath);
-  if ( !pixmap.isNull() )
-  {
-    pixmap = pixmap.scaled(contentsRect().size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-    update();
-  }
+void PictureFrameApplet::loadImage() {
+    pixmap.load(imagePath);
+    if (! pixmap.isNull()) {
+        pixmap = pixmap.scaled(contentsRect().size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        update();
+    }
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameApplet::configure()
-{
-  if ( dialog )
-  {
-    dialog->raise();
-    dialog->activateWindow();
-    return;
-  }
+void PictureFrameApplet::configure() {
+    if (dialog) {
+        dialog->raise();
+        dialog->activateWindow();
+        return;
+    }
 
-  dialog = new PictureFrameAppletConfigureDialog(this);
-  dialog->setWindowTitle(i18n("Configure PictureFrame Applet"));
+    dialog = new PictureFrameAppletConfigureDialog(this);
+    dialog->setWindowTitle(i18n("Configure PictureFrame Applet"));
 
-  dialog->setAttribute(Qt::WA_DeleteOnClose);
-  dialog->show();
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 
-  connect(dialog.data(), &QDialog::accepted, this,
-          [this]()
-          {
-            saveConfig();
-
-            KConfig config;
-            KConfigGroup group = config.group(id);
-            group.writeEntry("imagePath", imagePath);
-          });
+    connect(dialog.data(), &QDialog::accepted, this,
+            [this]() {
+                saveConfig();
+                KConfig config;
+                KConfigGroup group = config.group(id);
+                group.writeEntry("imagePath", imagePath);
+            }
+    );
 }
 
 //--------------------------------------------------------------------------------

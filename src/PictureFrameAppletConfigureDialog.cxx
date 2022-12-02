@@ -23,26 +23,23 @@
 
 //--------------------------------------------------------------------------------
 
-PictureFrameAppletConfigureDialog::PictureFrameAppletConfigureDialog(PictureFrameApplet *parent)
-  : QDialog(parent), applet(parent)
-{
-  ui.setupUi(this);
-  ui.textColor->setColor(applet->palette().color(applet->foregroundRole()));
-  ui.backgroundColor->setColor(applet->palette().color(applet->backgroundRole()));
-  ui.imagePath->setUrl(QUrl::fromLocalFile(applet->getImagePath()));
+PictureFrameAppletConfigureDialog::PictureFrameAppletConfigureDialog(PictureFrameApplet *parent) : QDialog(parent), applet(parent) {
+    ui.setupUi(this);
+    ui.textColor->setColor(applet->palette().color(applet->foregroundRole()));
+    ui.backgroundColor->setColor(applet->palette().color(applet->backgroundRole()));
+    ui.imagePath->setUrl(QUrl::fromLocalFile(applet->getImagePath()));
 }
 
 //--------------------------------------------------------------------------------
 
-void PictureFrameAppletConfigureDialog::accept()
-{
-  QPalette pal = applet->palette();
-  pal.setColor(applet->foregroundRole(), ui.textColor->color());
-  pal.setColor(applet->backgroundRole(), ui.backgroundColor->color());
-  applet->setPalette(pal);
-  applet->setImagePath(ui.imagePath->url().toLocalFile());
+void PictureFrameAppletConfigureDialog::accept() {
+    QPalette pal = applet->palette();
+    pal.setColor(applet->foregroundRole(), ui.textColor->color());
+    pal.setColor(applet->backgroundRole(), ui.backgroundColor->color());
+    applet->setPalette(pal);
+    applet->setImagePath(ui.imagePath->url().toLocalFile());
 
-  QDialog::accept();
+    QDialog::accept();
 }
 
 //--------------------------------------------------------------------------------

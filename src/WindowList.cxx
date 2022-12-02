@@ -30,61 +30,53 @@
 
 //--------------------------------------------------------------------------------
 
-WindowList::WindowList(QWidget *parent)
-  : QPushButton(parent)
-{
-  setIcon(QIcon::fromTheme("arrow-up"));
-  setMaximumWidth(22);
-  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+WindowList::WindowList(QWidget *parent) : QPushButton(parent) {
+    setIcon(QIcon::fromTheme("arrow-up"));
+    setMaximumWidth(22);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
 
-  setMenu(new PopupMenu(this));
-  connect(menu(), &PopupMenu::aboutToShow, this, &WindowList::fillMenu);
+    setMenu(new PopupMenu(this));
+    connect(menu(), &PopupMenu::aboutToShow, this, &WindowList::fillMenu);
 }
 
 //--------------------------------------------------------------------------------
 
-void WindowList::fillMenu()
-{
-  menu()->clear();
+void WindowList::fillMenu() {
+    menu()->clear();
 
-  QList<WId> windows = KWindowSystem::windows();
+    QList<WId> windows = KWindowSystem::windows();
 
-  for (int i = 1; i <= KWindowSystem::numberOfDesktops(); i++)
-  {
-    menu()->addSection(KWindowSystem::desktopName(i).isEmpty() ?
-                       QString::number(i) : KWindowSystem::desktopName(i));
+    for (int i = 1; i <= KWindowSystem::numberOfDesktops(); i++) {
+        menu()->addSection(KWindowSystem::desktopName(i).isEmpty() ?
+                           QString::number(i) : KWindowSystem::desktopName(i));
 
-    for (WId wid : windows)
-    {
-      KWindowInfo win(wid, NET::WMDesktop | NET::WMWindowType | NET::WMState | NET::WMName | NET::WMIcon);
-      if ( win.valid(true) && win.isOnDesktop(i) &&
-          (win.windowType(NET::DesktopMask) != NET::Desktop) &&
-          (win.windowType(NET::DockMask) != NET::Dock) &&
-           !(win.state() & NET::SkipTaskbar) )
-      {
-        QAction *action =
-            menu()->addAction(KWindowSystem::icon(wid, 22, 22, true), win.name(),
-                              [wid]() { KWindowSystem::forceActiveWindow(wid); });
+        for (WId wid : windows) {
+            KWindowInfo win(wid, NET::WMDesktop | NET::WMWindowType | NET::WMState | NET::WMName | NET::WMIcon);
+            if (win.valid(true) && win.isOnDesktop(i) && (win.windowType(NET::DesktopMask) != NET::Desktop) &&
+                (win.windowType(NET::DockMask) != NET::Dock) && ! (win.state() & NET::SkipTaskbar)) {
+                QAction *action =
+                menu()->addAction(KWindowSystem::icon(wid, 22, 22, true), win.name(),
+                                  [wid]() { KWindowSystem::forceActiveWindow(wid); }
+                );
 
-        action->setData(static_cast<int>(wid));
-      }
+                action->setData(static_cast<int>(wid));
+            }
+        }
     }
-  }
 }
 
 //--------------------------------------------------------------------------------
 
-void WindowList::paintEvent(QPaintEvent *event)
-{
-  Q_UNUSED(event);
+void WindowList::paintEvent(QPaintEvent *event) {
+    Q_UNUSED(event);
 
-  QPainter painter(this);
+    QPainter painter(this);
 
-  QStyleOptionButton option;
-  initStyleOption(&option);
-  option.features = QStyleOptionButton::None;  // avoid menu arrow
+    QStyleOptionButton option;
+    initStyleOption(&option);
+    option.features = QStyleOptionButton::None;  // avoid menu arrow
 
-  style()->drawControl(QStyle::CE_PushButton, &option, &painter, this);
+    style()->drawControl(QStyle::CE_PushButton, &option, &painter, this);
 }
 
 //--------------------------------------------------------------------------------

@@ -31,73 +31,80 @@
 
 //--------------------------------------------------------------------------------
 
-OnScreenBrightness::OnScreenBrightness(QWidget *parent)
-  : QProgressBar(parent)
-{
-  setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
+OnScreenBrightness::OnScreenBrightness(QWidget *parent) : QProgressBar(parent) {
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
 
-  setFixedSize(400, 40);
-  hide();
+    setFixedSize(400, 40);
+    hide();
 
-  KWindowSystem::setState(winId(), NET::KeepAbove);
-  KWindowSystem::setType(winId(), NET::Dock);
-  KWindowSystem::setOnAllDesktops(winId(), true);
+    KWindowSystem::setState(winId(), NET::KeepAbove);
+    KWindowSystem::setType(winId(), NET::Dock);
+    KWindowSystem::setOnAllDesktops(winId(), true);
 
-  hideTimer.setInterval(1000);
-  hideTimer.setSingleShot(true);
-  connect(&hideTimer, &QTimer::timeout, this, &QWidget::hide);
+    hideTimer.setInterval(1000);
+    hideTimer.setSingleShot(true);
+    connect(&hideTimer, &QTimer::timeout, this, &QWidget::hide);
 
-  QDBusConnection::sessionBus()
-      .connect("org.kde.Solid.PowerManagement", "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
-               "org.kde.Solid.PowerManagement.Actions.BrightnessControl", "brightnessChanged",
-               this, SLOT(brightnessChanged(int)));
+    QDBusConnection::sessionBus().connect(
+        "org.kde.Solid.PowerManagement",
+        "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
+        "org.kde.Solid.PowerManagement.Actions.BrightnessControl",
+        "brightnessChanged",
+        this,
+        SLOT(brightnessChanged(int))
+    );
 
-  QDBusConnection::sessionBus()
-      .connect("org.kde.Solid.PowerManagement", "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
-               "org.kde.Solid.PowerManagement.Actions.BrightnessControl", "brightnessMaxChanged",
-               this, SLOT(brightnessMaxChanged(int)));
+    QDBusConnection::sessionBus().connect(
+        "org.kde.Solid.PowerManagement",
+        "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
+        "org.kde.Solid.PowerManagement.Actions.BrightnessControl",
+        "brightnessMaxChanged",
+        this,
+        SLOT(brightnessMaxChanged(int))
+    );
 
-  QDBusMessage msg =
-      QDBusMessage::createMethodCall("org.kde.Solid.PowerManagement",
-                                     "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
-                                     "org.kde.Solid.PowerManagement.Actions.BrightnessControl",
-                                     "brightnessMax");
+    QDBusMessage msg = QDBusMessage::createMethodCall(
+                            "org.kde.Solid.PowerManagement",
+                            "/org/kde/Solid/PowerManagement/Actions/BrightnessControl",
+                            "org.kde.Solid.PowerManagement.Actions.BrightnessControl",
+                            "brightnessMax"
+    );
 
-  QDBusConnection::sessionBus().callWithCallback(msg, this, SLOT(gotBrightnessMax(QDBusMessage)), nullptr);
+    QDBusConnection::sessionBus().callWithCallback(
+        msg, this, SLOT(gotBrightnessMax(QDBusMessage)), nullptr
+    );
 }
 
 //--------------------------------------------------------------------------------
 
-void OnScreenBrightness::gotBrightnessMax(QDBusMessage msg)
-{
-  QDBusReply<int> reply = msg;
+void OnScreenBrightness::gotBrightnessMax(QDBusMessage msg) {
+    QDBusReply<int> reply = msg;
 
-  if ( !reply.isValid() )
-    return;
+    if (! reply.isValid() ) {
+        return;
+    }
 
-  int max = reply.value();
+    int max = reply.value();
 
-  setMaximum(max);
+    setMaximum(max);
 }
 
 //--------------------------------------------------------------------------------
 
-void OnScreenBrightness::brightnessMaxChanged(int value)
-{
-  setMaximum(value);
+void OnScreenBrightness::brightnessMaxChanged(int value) {
+    setMaximum(value);
 }
 
 //--------------------------------------------------------------------------------
 
-void OnScreenBrightness::brightnessChanged(int value)
-{
-  setValue(value);
+void OnScreenBrightness::brightnessChanged(int value) {
+    setValue(value);
 
-  move((QApplication::primaryScreen()->size().width() - width()) / 2,
-        QApplication::primaryScreen()->size().height() * 0.8);
+    move((QApplication::primaryScreen()->size().width() - width()) / 2,
+          QApplication::primaryScreen()->size().height() * 0.8);
 
-  show();
-  hideTimer.start();
+    show();
+    hideTimer.start();
 }
 
 //--------------------------------------------------------------------------------
