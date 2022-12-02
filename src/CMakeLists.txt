@@ -85,7 +85,7 @@ else()
 endif()
 
 # e.g. on openSuse Leap 42.3 compile fails as a GLib header included uses signals as var
-add_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
+#add_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 
 ki18n_wrap_ui(UI_FILES
     ConfigureDesktopDialog.ui
