@@ -31,22 +31,22 @@ class NetworkList : public QFrame {
     Q_OBJECT
 
     public:
-    NetworkList(QWidget *parent);
-    QSize sizeHint() const override;
+        NetworkList(QWidget *parent);
+        QSize sizeHint() const override;
 
     Q_SIGNALS:
-    void changed();
+        void changed();
 
     private Q_SLOTS:
-    void statusUpdate();
-    void fillConnections();
-    void openConfigureDialog();
+        void statusUpdate();
+        void fillConnections();
+        void openConfigureDialog();
 
     private:
-    QToolButton *network, *wireless;
-    QVBoxLayout *connectionsVbox;
-    QHBoxLayout *hbox;
-    QScrollArea *scroll;
+        QToolButton *network, *wireless;
+        QVBoxLayout *connectionsVbox;
+        QHBoxLayout *hbox;
+        QScrollArea *scroll;
 };
 
 //--------------------------------------------------------------------------------
@@ -59,21 +59,21 @@ class NetworkButton : public IconButton {
     Q_OBJECT
 
     public:
-    NetworkButton(NetworkManager::Connection::Ptr c = NetworkManager::Connection::Ptr(),
-                  NetworkManager::Device::Ptr dev = NetworkManager::Device::Ptr(),
-                  NetworkManager::AccessPoint::Ptr accessPoint = NetworkManager::AccessPoint::Ptr());
+        NetworkButton(NetworkManager::Connection::Ptr c = NetworkManager::Connection::Ptr(),
+                      NetworkManager::Device::Ptr dev = NetworkManager::Device::Ptr(),
+                      NetworkManager::AccessPoint::Ptr accessPoint = NetworkManager::AccessPoint::Ptr());
 
-    static bool compare(const NetworkButton *left, const NetworkButton *right);
+        static bool compare(const NetworkButton *left, const NetworkButton *right);
 
     private Q_SLOTS:
-    void toggleNetworkStatus(bool on);
+        void toggleNetworkStatus(bool on);
 
     private:
-    NetworkManager::Connection::Ptr connection;
-    NetworkManager::Device::Ptr device;
-    QByteArray rawSsid;
-    QString ssid;
-    NetworkManager::AccessPoint::WpaFlags wpaFlags;
+        NetworkManager::Connection::Ptr connection;
+        NetworkManager::Device::Ptr device;
+        QByteArray rawSsid;
+        QString ssid;
+        NetworkManager::AccessPoint::WpaFlags wpaFlags;
 };
 
 #endif

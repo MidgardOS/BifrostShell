@@ -35,15 +35,15 @@ class AppMenu : public Launcher {
     Q_OBJECT
 
     public:
-    AppMenu(DesktopPanel *parent);
+        AppMenu(DesktopPanel *parent);
 
     private Q_SLOTS:
-    void adjustIconSize();
-    void fill() override;
-    void showMenu();
+        void adjustIconSize();
+        void fill() override;
+        void showMenu();
 
     private:
-    QToolButton *button;
+        QToolButton *button;
 };
 
 //--------------------------------------------------------------------------------
@@ -53,14 +53,14 @@ class Menu : public QMenu {
     Q_OBJECT
 
     public:
-    Menu(QWidget *parent);
-    void exec();
+        Menu(QWidget *parent);
+        void exec();
 
     protected:
-    void hideEvent(QHideEvent *event) override;
+        void hideEvent(QHideEvent *event) override;
 
     private:
-    QEventLoop eventLoop;
+        QEventLoop eventLoop;
 };
 
 //--------------------------------------------------------------------------------

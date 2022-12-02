@@ -31,28 +31,27 @@
 #include "DesktopPanel.hxx"
 #include "SysTrayNotifyItem.hxx"
 
-class SysTray : public QFrame
-{
-  Q_OBJECT
+class SysTray : public QFrame {
+    Q_OBJECT
 
-  public:
-    SysTray(DesktopPanel *parent);
+    public:
+        SysTray(DesktopPanel *parent);
 
-  private Q_SLOTS:
-    void fill();
-    void itemRegistered(QString service);
-    void itemUnregistered(QString service);
-    void itemInitialized(SysTrayNotifyItem *item);
+    private Q_SLOTS:
+        void fill();
+        void itemRegistered(QString service);
+        void itemUnregistered(QString service);
+        void itemInitialized(SysTrayNotifyItem *item);
 
-  private:
-    void registerWatcher();
-    void arrangeNotifyItems();
+    private:
+        void registerWatcher();
+        void arrangeNotifyItems();
 
-  private:
-    QVBoxLayout *vbox, *appsVbox;
-    QVector<QHBoxLayout *> appsRows;
-    QString serviceName;
-    QMap<QString, QPointer<SysTrayNotifyItem>> items;
+    private:
+        QVBoxLayout *vbox, *appsVbox;
+        QVector<QHBoxLayout *> appsRows;
+        QString serviceName;
+        QMap<QString, QPointer<SysTrayNotifyItem>> items;
 };
 
 #endif

@@ -31,27 +31,27 @@ class NotificationServer : public SysTrayItem {
     Q_OBJECT
 
     public:
-    NotificationServer(QWidget *parent);
-    void CloseNotification(uint id);
-    QStringList GetCapabilities();
-    QString GetServerInformation(QString &vendor, QString &version, QString &spec_version);
-    uint Notify(const QString &app_name, uint replaces_id, const QString &app_icon,
-                const QString &summary, const QString &body, const QStringList &actions,
-                const QVariantMap &hints, int timeout);
+        NotificationServer(QWidget *parent);
+        void CloseNotification(uint id);
+        QStringList GetCapabilities();
+        QString GetServerInformation(QString &vendor, QString &version, QString &spec_version);
+        uint Notify(const QString &app_name, uint replaces_id, const QString &app_icon,
+                    const QString &summary, const QString &body, const QStringList &actions,
+                    const QVariantMap &hints, int timeout);
 
     protected:
-    QWidget *getDetailsList() override;
+        QWidget *getDetailsList() override;
 
     Q_SIGNALS:
-    void ActionInvoked(uint id, const QString &action_key);
-    void NotificationClosed(uint id, uint reason);
+        void ActionInvoked(uint id, const QString &action_key);
+        void NotificationClosed(uint id, uint reason);
 
     private:
-    QString makeToolTip() const;
+        QString makeToolTip() const;
 
     private:
-    uint notifyId = 1;
-    NotificationList *notificationList;
+        uint notifyId = 1;
+        NotificationList *notificationList;
 };
 
 #endif

@@ -31,14 +31,14 @@ class DiskUsageAppletConfigureDialog : public QDialog {
     Q_OBJECT
 
     public:
-    DiskUsageAppletConfigureDialog(DiskUsageApplet *parent);
+        DiskUsageAppletConfigureDialog(DiskUsageApplet *parent);
 
     private Q_SLOTS:
-    void accept() override;
+        void accept() override;
 
     private:
-    DiskUsageApplet *applet;
-    Ui::DiskUsageAppletConfigureDialog ui;
+        DiskUsageApplet *applet;
+        Ui::DiskUsageAppletConfigureDialog ui;
 };
 
 #endif

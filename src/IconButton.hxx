@@ -30,19 +30,19 @@ class IconButton : public QToolButton {
     Q_OBJECT
 
     public:
-    IconButton(QWidget *parent = nullptr);
-    IconButton(QWidget *parent, const QIcon &icon, int iconSize, const QString &name);
+        IconButton(QWidget *parent = nullptr);
+        IconButton(QWidget *parent, const QIcon &icon, int iconSize, const QString &name);
 
-    void setText(const QString &txt);
-    void setIcon(const QIcon &icon);
-    void setIcon2(const QIcon &icon);
+        void setText(const QString &txt);
+        void setIcon(const QIcon &icon);
+        void setIcon2(const QIcon &icon);
 
-    QSize sizeHint() const override;
+        QSize sizeHint() const override;
 
     private:
-    QLabel *iconLabel = nullptr;
-    QLabel *icon2Label = nullptr;
-    QLabel *textLabel = nullptr;
+        QLabel *iconLabel = nullptr;
+        QLabel *icon2Label = nullptr;
+        QLabel *textLabel = nullptr;
 };
 
 #endif

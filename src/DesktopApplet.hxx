@@ -29,31 +29,31 @@ class DesktopApplet : public QFrame {
     Q_OBJECT
 
     public:
-    DesktopApplet(QWidget *parent, const QString &theId, bool addConfigureAction = true);
-    virtual void loadConfig();
-    bool isConfiguring() const { return buttons->isVisible(); }
-    const QString &getId() const { return id; }
-    int isOnDesktop(int d) const { return (onDesktop == NET::OnAllDesktops) || (onDesktop == d); }
+        DesktopApplet(QWidget *parent, const QString &theId, bool addConfigureAction = true);
+        virtual void loadConfig();
+        bool isConfiguring() const { return buttons->isVisible(); }
+        const QString &getId() const { return id; }
+        int isOnDesktop(int d) const { return (onDesktop == NET::OnAllDesktops) || (onDesktop == d); }
 
     public Q_SLOTS:
-    virtual void configure() { }
-    virtual void saveConfig();
+        virtual void configure() { }
+        virtual void saveConfig();
 
-    Q_SIGNALS:
-    void removeThis(DesktopApplet *);
+        Q_SIGNALS:
+        void removeThis(DesktopApplet *);
 
     protected:
-    QString id;
+        QString id;
 
     private Q_SLOTS:
-    void startGeometryChange();
-    void finishGeometryChange(QAbstractButton *clicked);
-    void removeThisApplet();
+        void startGeometryChange();
+        void finishGeometryChange(QAbstractButton *clicked);
+        void removeThisApplet();
 
     private:
-    QDialogButtonBox *buttons = nullptr;
-    QRect oldRect;
-    int onDesktop = NET::OnAllDesktops;
+        QDialogButtonBox *buttons = nullptr;
+        QRect oldRect;
+        int onDesktop = NET::OnAllDesktops;
 };
 
 #endif

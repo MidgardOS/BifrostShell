@@ -22,28 +22,28 @@
 #define _Pager_H_
 
 #include <QWidget>
+
 class QButtonGroup;
 class PagerButton;
 class DesktopPanel;
 
-class Pager : public QWidget
-{
-  Q_OBJECT
+class Pager : public QWidget {
+    Q_OBJECT
 
-  public:
-    Pager(DesktopPanel *parent);
+    public:
+        Pager(DesktopPanel *parent);
 
-  protected:
-    void wheelEvent(QWheelEvent *event) override;
+    protected:
+        void wheelEvent(QWheelEvent *event) override;
 
-  private Q_SLOTS:
-    void fill();
-    void changeDesktop(bool checked);
+    private Q_SLOTS:
+        void fill();
+        void changeDesktop(bool checked);
 
-  private:
-    QButtonGroup *group;
-    QVector<PagerButton *> buttons;
-    bool showIcons = true;
+    private:
+        QButtonGroup *group;
+        QVector<PagerButton *> buttons;
+        bool showIcons = true;
 };
 
 #endif

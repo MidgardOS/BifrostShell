@@ -31,23 +31,23 @@ class ConfigureDesktopDialog : public QDialog {
     Q_OBJECT
 
     public:
-    ConfigureDesktopDialog(QWidget *parent, const DesktopWidget::Wallpaper &wp);
-    const DesktopWidget::Wallpaper &getWallpaper() const { return wallpaper; }
+        ConfigureDesktopDialog(QWidget *parent, const DesktopWidget::Wallpaper &wp);
+        const DesktopWidget::Wallpaper &getWallpaper() const { return wallpaper; }
 
-    Q_SIGNALS:
-    void changed();
+        Q_SIGNALS:
+        void changed();
 
     private Q_SLOTS:
-    void returnPressed(const QString &text);
-    void buttonClicked(QAbstractButton *button);
+        void returnPressed(const QString &text);
+        void buttonClicked(QAbstractButton *button);
 
     private:
-    void showImages();
+        void showImages();
 
     private:
-    Ui::ConfigureDesktopDialog ui;
-    QButtonGroup buttonGroup;
-    DesktopWidget::Wallpaper wallpaper;
+        Ui::ConfigureDesktopDialog ui;
+        QButtonGroup buttonGroup;
+        DesktopWidget::Wallpaper wallpaper;
 };
 
 #endif

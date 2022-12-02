@@ -29,11 +29,11 @@ class ClockWidgetConfigureDialog : public QDialog {
     Q_OBJECT
 
     public:
-    ClockWidgetConfigureDialog(QWidget *parent, const QVector<QByteArray> &timeZoneIds);
-    QVector<QByteArray> getSelectedTimeZoneIds() const;
+        ClockWidgetConfigureDialog(QWidget *parent, const QVector<QByteArray> &timeZoneIds);
+        QVector<QByteArray> getSelectedTimeZoneIds() const;
 
     private:
-    QTreeWidget *tree;
+        QTreeWidget *tree;
 };
 
 #endif

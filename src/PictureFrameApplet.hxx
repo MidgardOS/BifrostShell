@@ -25,33 +25,32 @@
 #include "PictureFrameAppletConfigureDialog.hxx"
 #include <QPointer>
 
-class PictureFrameApplet : public DesktopApplet
-{
-  Q_OBJECT
+class PictureFrameApplet : public DesktopApplet {
+    Q_OBJECT
 
-  public:
-    PictureFrameApplet(QWidget *parent, const QString &theId);
+    public:
+        PictureFrameApplet(QWidget *parent, const QString &theId);
 
-    void loadConfig() override;
-    QSize sizeHint() const override;
+        void loadConfig() override;
+        QSize sizeHint() const override;
 
-    QString getImagePath() const { return imagePath; }
-    void setImagePath(const QString &path) { imagePath = path; loadImage(); }
+        QString getImagePath() const { return imagePath; }
+        void setImagePath(const QString &path) { imagePath = path; loadImage(); }
 
-  public Q_SLOTS:
-    void configure() override;
+    public Q_SLOTS:
+        void configure() override;
 
-  protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+    protected:
+        void resizeEvent(QResizeEvent *event) override;
+        void paintEvent(QPaintEvent *event) override;
 
-  private:
-    void loadImage();
+    private:
+        void loadImage();
 
-  private:
-    QPixmap pixmap;
-    QString imagePath;
-    QPointer<PictureFrameAppletConfigureDialog> dialog;
+    private:
+        QPixmap pixmap;
+        QString imagePath;
+        QPointer<PictureFrameAppletConfigureDialog> dialog;
 };
 
 #endif

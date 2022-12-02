@@ -30,18 +30,18 @@ class DeviceNotifier : public SysTrayItem {
     Q_OBJECT
 
     public:
-    DeviceNotifier(QWidget *parent);
+        DeviceNotifier(QWidget *parent);
 
     protected:
-    QWidget *getDetailsList() override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
+        QWidget *getDetailsList() override;
+        bool eventFilter(QObject *watched, QEvent *event) override;
 
     private Q_SLOTS:
-    void checkDeviceList();
+        void checkDeviceList();
 
     private:
-    DeviceList *deviceList = nullptr;
-    QTimer timer;
+        DeviceList *deviceList = nullptr;
+        QTimer timer;
 };
 
 #endif

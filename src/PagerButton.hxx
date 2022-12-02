@@ -23,38 +23,38 @@
 
 #include <QPushButton>
 #include <QTimer>
+
 class DesktopPanel;
 
 #include <kwindowsystem.h>
 
-class PagerButton : public QPushButton
-{
-  Q_OBJECT
+class PagerButton : public QPushButton {
+    Q_OBJECT
 
-  public:
-    PagerButton(int num, DesktopPanel *panel, bool showIcon);
+    public:
+        PagerButton(int num, DesktopPanel *panel, bool showIcon);
 
-    int getDesktop() const { return desktop; }
+        int getDesktop() const { return desktop; }
 
-    QSize sizeHint() const override;
+        QSize sizeHint() const override;
 
-  protected:
-    void paintEvent(QPaintEvent *event) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragLeaveEvent(QDragLeaveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    protected:
+        void paintEvent(QPaintEvent *event) override;
+        void dragEnterEvent(QDragEnterEvent *event) override;
+        void dragLeaveEvent(QDragLeaveEvent *event) override;
+        void dropEvent(QDropEvent *event) override;
 
-  private Q_SLOTS:
-    void createPixmap();
-    void windowChanged(WId id, NET::Properties props, NET::Properties2 props2);
+    private Q_SLOTS:
+        void createPixmap();
+        void windowChanged(WId id, NET::Properties props, NET::Properties2 props2);
 
-  private:
-    int desktop;
-    DesktopPanel *panel;
-    bool showIcon;
-    QPixmap firstPixmap;
-    QTimer dragDropTimer;
-    QTimer pixmapTimer;
+    private:
+        int desktop;
+        DesktopPanel *panel;
+        bool showIcon;
+        QPixmap firstPixmap;
+        QTimer dragDropTimer;
+        QTimer pixmapTimer;
 };
 
 #endif

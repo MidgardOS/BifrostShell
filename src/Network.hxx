@@ -34,19 +34,19 @@ class Network : public SysTrayItem {
     Q_OBJECT
 
     public:
-    Network(QWidget *parent);
+        Network(QWidget *parent);
 
     protected:
-    QWidget *getDetailsList() override;
+        QWidget *getDetailsList() override;
 
     private Q_SLOTS:
-    void checkState();
+        void checkState();
 
     private:
-    QTimer blinkTimer;
-    bool blinkState = false;
-    QPixmap origPixmap;
-    QPointer<NetworkList> networkList;
+        QTimer blinkTimer;
+        bool blinkState = false;
+        QPixmap origPixmap;
+        QPointer<NetworkList> networkList;
 };
 
 #endif

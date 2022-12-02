@@ -34,26 +34,26 @@ class DiskUsageApplet : public DesktopApplet {
     Q_OBJECT
 
     public:
-    DiskUsageApplet(QWidget *parent, const QString &theId);
-    void loadConfig() override;
+        DiskUsageApplet(QWidget *parent, const QString &theId);
+        void loadConfig() override;
 
     public Q_SLOTS:
-    void configure() override;
-    void saveConfig() override;
+        void configure() override;
+        void saveConfig() override;
 
     private Q_SLOTS:
-    void fill();
+        void fill();
 
     private:
-    QTimer timer;
-    struct SizeInfo {
-        QLabel *label;
-        QProgressBar *progress;
-        QLabel *sizeLabel;
-        bool used;
-    };
-    QMap<QString, SizeInfo> partitionMap;
-    QPointer<DiskUsageAppletConfigureDialog> dialog;
+        QTimer timer;
+        struct SizeInfo {
+            QLabel *label;
+            QProgressBar *progress;
+            QLabel *sizeLabel;
+            bool used;
+        };
+        QMap<QString, SizeInfo> partitionMap;
+        QPointer<DiskUsageAppletConfigureDialog> dialog;
 };
 
 #endif

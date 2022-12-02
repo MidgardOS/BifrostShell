@@ -32,63 +32,61 @@
 
 // applet using data from http://api.openweathermap.org
 
-class WeatherApplet : public DesktopApplet
-{
-  Q_OBJECT
+class WeatherApplet : public DesktopApplet {
+    Q_OBJECT
 
-  public:
-    WeatherApplet(QWidget *parent, const QString &theId);
+    public:
+        WeatherApplet(QWidget *parent, const QString &theId);
 
-    void loadConfig() override;
-    QSize sizeHint() const override;
+        void loadConfig() override;
+        QSize sizeHint() const override;
 
-  public Q_SLOTS:
-    void configure() override;
+    public Q_SLOTS:
+        void configure() override;
 
-  protected:
-    void showEvent(QShowEvent *event) override;
+    protected:
+        void showEvent(QShowEvent *event) override;
 
-  private Q_SLOTS:
-    void fetchData();
-    void gotData(KJob *job);
+    private Q_SLOTS:
+        void fetchData();
+        void gotData(KJob *job);
 
-  private:  // methods
-    void setIcon(QLabel *label, const QString &icon);
+    private:  // methods
+        void setIcon(QLabel *label, const QString &icon);
 
-  private:  // members
-    static QString apiKey; // see http://openweathermap.org/api
-    QString cityId, units;
-    QTimer timer;
-    QPixmap moon;
-    QLabel *cityLabel = nullptr;
-    QLabel *moonLabel = nullptr;
-    QLabel *tempLabel = nullptr;
-    QLabel *pressureLabel = nullptr;
-    QLabel *humidityLabel = nullptr;
-    QLabel *windSpeedLabel = nullptr;
-    QLabel *windDirectionLabel = nullptr;
+    private:  // members
+        static QString apiKey; // see http://openweathermap.org/api
+        QString cityId, units;
+        QTimer timer;
+        QPixmap moon;
+        QLabel *cityLabel = nullptr;
+        QLabel *moonLabel = nullptr;
+        QLabel *tempLabel = nullptr;
+        QLabel *pressureLabel = nullptr;
+        QLabel *humidityLabel = nullptr;
+        QLabel *windSpeedLabel = nullptr;
+        QLabel *windDirectionLabel = nullptr;
 
-    class ForecastWidget *shortForecast[4] = { nullptr };
-    class ForecastWidget *forecast[5] = { nullptr };
+        class ForecastWidget *shortForecast[4] = { nullptr };
+        class ForecastWidget *forecast[5] = { nullptr };
 
-    QPointer<WeatherAppletConfigureDialog> dialog;
+        QPointer<WeatherAppletConfigureDialog> dialog;
 
-    friend WeatherAppletConfigureDialog;
+        friend WeatherAppletConfigureDialog;
 };
 
 //--------------------------------------------------------------------------------
 
-class ForecastWidget : public QWidget
-{
-  Q_OBJECT
+class ForecastWidget : public QWidget {
+    Q_OBJECT
 
-  public:
-    ForecastWidget(QWidget *parent, bool showMinMax = true);
+    public:
+        ForecastWidget(QWidget *parent, bool showMinMax = true);
 
-    QLabel *min = nullptr;
-    QLabel *max = nullptr;
-    QLabel *day = nullptr;
-    QLabel *icon = nullptr;
+        QLabel *min = nullptr;
+        QLabel *max = nullptr;
+        QLabel *day = nullptr;
+        QLabel *icon = nullptr;
 };
 
 #endif

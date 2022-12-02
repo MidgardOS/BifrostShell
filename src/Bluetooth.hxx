@@ -31,19 +31,19 @@ class Bluetooth : public SysTrayItem {
     Q_OBJECT
 
     public:
-    Bluetooth(QWidget *parent);
-    ~Bluetooth() override;
+        Bluetooth(QWidget *parent);
+        ~Bluetooth() override;
 
     protected:
-    QWidget *getDetailsList() override;
+        QWidget *getDetailsList() override;
 
     private Q_SLOTS:
-    void changed();
+        void changed();
 
     private:
-    BluezQt::Manager *manager;
-    BluezQt::InitManagerJob *job;
-    QPointer<KCMultiDialog> dialog;
+        BluezQt::Manager *manager;
+        BluezQt::InitManagerJob *job;
+        QPointer<KCMultiDialog> dialog;
 };
 
 #endif

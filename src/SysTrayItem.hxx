@@ -23,23 +23,22 @@
 
 #include <QLabel>
 
-class SysTrayItem : public QLabel
-{
-  Q_OBJECT
+class SysTrayItem : public QLabel {
+    Q_OBJECT
 
-  public:
-    SysTrayItem(QWidget *parent, const QString &icon = QString());
+    public:
+        SysTrayItem(QWidget *parent, const QString &icon = QString());
 
-  protected Q_SLOTS:
-    void toggleDetailsList();
-    void showDetailsList();
+    protected Q_SLOTS:
+        void toggleDetailsList();
+        void showDetailsList();
 
-  protected:
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual QWidget *getDetailsList() { return nullptr; }
+    protected:
+        virtual void mousePressEvent(QMouseEvent *event) override;
+        virtual QWidget *getDetailsList() { return nullptr; }
 
-  private:
-    QString iconName;
+    private:
+        QString iconName;
 };
 
 #endif

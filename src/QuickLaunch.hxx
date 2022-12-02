@@ -26,18 +26,17 @@
 
 #include <QGridLayout>
 
-class QuickLaunch : public Launcher
-{
-  Q_OBJECT
+class QuickLaunch : public Launcher {
+    Q_OBJECT
 
-  public:
-    QuickLaunch(DesktopPanel *parent);
+    public:
+        QuickLaunch(DesktopPanel *parent);
 
-  private Q_SLOTS:
-    void fill() override;
+    private Q_SLOTS:
+        void fill() override;
 
-  private:
-    QGridLayout *grid;
+    private:
+        QGridLayout *grid;
 };
 
 #endif

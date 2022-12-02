@@ -23,21 +23,21 @@
 
 #include <QDialog>
 #include "ui_PictureFrameAppletConfigureDialog.h"
+
 class PictureFrameApplet;
 
-class PictureFrameAppletConfigureDialog : public QDialog
-{
-  Q_OBJECT
+class PictureFrameAppletConfigureDialog : public QDialog {
+    Q_OBJECT
 
-  public:
-    PictureFrameAppletConfigureDialog(PictureFrameApplet *parent);
+    public:
+        PictureFrameAppletConfigureDialog(PictureFrameApplet *parent);
 
-  private Q_SLOTS:
-    void accept() override;
+    private Q_SLOTS:
+        void accept() override;
 
-  private:
-    PictureFrameApplet *applet;
-    Ui::PictureFrameAppletConfigureDialog ui;
+    private:
+        PictureFrameApplet *applet;
+        Ui::PictureFrameAppletConfigureDialog ui;
 };
 
 #endif

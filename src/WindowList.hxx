@@ -23,18 +23,17 @@
 
 #include <QPushButton>
 
-class WindowList : public QPushButton
-{
-  Q_OBJECT
+class WindowList : public QPushButton {
+    Q_OBJECT
 
-  public:
-    WindowList(QWidget *parent);
+    public:
+        WindowList(QWidget *parent);
 
-  protected:
-    void paintEvent(QPaintEvent *event) override;
+    protected:
+        void paintEvent(QPaintEvent *event) override;
 
-  private Q_SLOTS:
-    void fillMenu();
+    private Q_SLOTS:
+        void fillMenu();
 };
 
 #endif

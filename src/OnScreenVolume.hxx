@@ -24,28 +24,28 @@
 #include <QProgressBar>
 #include <QVariantMap>
 #include <QTimer>
+
 class QDBusMessage;
 class QDBusError;
 
-class OnScreenVolume : public QProgressBar
-{
-  Q_OBJECT
+class OnScreenVolume : public QProgressBar {
+    Q_OBJECT
 
-  public:
-    OnScreenVolume(QWidget *parent);
+    public:
+        OnScreenVolume(QWidget *parent);
 
-  private Q_SLOTS:
-    void gotMasterMixerError(QDBusError error, QDBusMessage msg);
-    void getMasterMixer();
-    void gotMasterMixer(QDBusMessage msg);
-    void controlChanged();
-    void volumeChanged(QDBusMessage reply);
+    private Q_SLOTS:
+        void gotMasterMixerError(QDBusError error, QDBusMessage msg);
+        void getMasterMixer();
+        void gotMasterMixer(QDBusMessage msg);
+        void controlChanged();
+        void volumeChanged(QDBusMessage reply);
 
-  private:
-    QTimer hideTimer, retryTimer;
-    QString masterMixer;
-    QString masterControl;
-    bool requestPending = false;
+    private:
+        QTimer hideTimer, retryTimer;
+        QString masterMixer;
+        QString masterControl;
+        bool requestPending = false;
 };
 
 #endif

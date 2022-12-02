@@ -26,30 +26,31 @@
 #include <Solid/Device>
 #include <QPointer>
 #include <KCMultiDialog>
+
 class QDBusMessage;
 
 class Battery : public SysTrayItem {
     Q_OBJECT
 
     public:
-    Battery(QWidget *parent);
-    static QIcon getStatusIcon(int charge, bool isCharging);
+        Battery(QWidget *parent);
+        static QIcon getStatusIcon(int charge, bool isCharging);
 
     protected:
-    QWidget *getDetailsList() override;
+        QWidget *getDetailsList() override;
 
     private Q_SLOTS:
-    void onBatteryReply(const QDBusMessage &msg);
-    void upowerPropertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidated);
-    void changed();
+        void onBatteryReply(const QDBusMessage &msg);
+        void upowerPropertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidated);
+        void changed();
 
     private:
-    QString secsToHM(int secs) const;
+        QString secsToHM(int secs) const;
 
     private:
-    Solid::Device device;
-    bool onBattery = false;
-    QPointer<KCMultiDialog> dialog;
+        Solid::Device device;
+        bool onBattery = false;
+        QPointer<KCMultiDialog> dialog;
 };
 
 #endif

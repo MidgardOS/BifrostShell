@@ -32,13 +32,13 @@ class CalendarPopup : public QFrame {
     Q_OBJECT
 
     public:
-    CalendarPopup(QWidget *parent);
+        CalendarPopup(QWidget *parent);
 
     public Q_SLOTS:
-    void goToday();
+        void goToday();
 
     private:
-    QCalendarWidget *cal;
+        QCalendarWidget *cal;
 };
 
 class ClockWidget : public QFrame {
@@ -48,25 +48,25 @@ class ClockWidget : public QFrame {
     Q_PROPERTY(QString dateFormat MEMBER dateFormat)
 
     public:
-    ClockWidget(DesktopPanel *parent);
+        ClockWidget(DesktopPanel *parent);
 
     protected:
-    void mousePressEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;
 
     private Q_SLOTS:
-    void fill();
-    void tick();
+        void fill();
+        void tick();
 
     private:
-    QTimer *timer;
-    QLabel *timeLabel, *dayLabel, *dateLabel;
-    CalendarPopup *calendar;
+        QTimer *timer;
+        QLabel *timeLabel, *dayLabel, *dateLabel;
+        CalendarPopup *calendar;
 
-    QString timeFormat = QStringLiteral("HH:mm");
-    QString dayFormat  = QStringLiteral("ddd");
-    QString dateFormat = QStringLiteral("d.MMM yyyy");
+        QString timeFormat = QStringLiteral("HH:mm");
+        QString dayFormat  = QStringLiteral("ddd");
+        QString dateFormat = QStringLiteral("d.MMM yyyy");
 
-    QVector<QByteArray> timeZoneIds;
+        QVector<QByteArray> timeZoneIds;
 };
 
 #endif

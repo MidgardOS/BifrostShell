@@ -30,35 +30,34 @@
 class OrgKdeStatusNotifierItem;
 class QDBusPendingCallWatcher;
 
-class SysTrayNotifyItem : public QLabel
-{
-  Q_OBJECT
+class SysTrayNotifyItem : public QLabel {
+    Q_OBJECT
 
-  public:
-    SysTrayNotifyItem(QWidget *parent, const QString &service, const QString &path);
+    public:
+        SysTrayNotifyItem(QWidget *parent, const QString &service, const QString &path);
 
-  Q_SIGNALS:
-    void initialized(SysTrayNotifyItem *);
+        Q_SIGNALS:
+        void initialized(SysTrayNotifyItem *);
 
-  protected:
-    void wheelEvent(QWheelEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    protected:
+        void wheelEvent(QWheelEvent *event) override;
+        void mouseReleaseEvent(QMouseEvent *event) override;
 
-  private Q_SLOTS:
-    void startTimer();
-    void fetchData();
-    void fetchDataReply(QDBusPendingCallWatcher *w);
-    void menuLayoutReply(QDBusPendingCallWatcher *w);
+    private Q_SLOTS:
+        void startTimer();
+        void fetchData();
+        void fetchDataReply(QDBusPendingCallWatcher *w);
+        void menuLayoutReply(QDBusPendingCallWatcher *w);
 
-  private:
-    QPixmap findPixmap(const QString &name, const QString &path);
-    QPixmap applyOverlay(const QPixmap &pixmap, const QPixmap &overlay);
-    void fillMenu(QMenu &menu, const QDBusMenuLayoutItem &item);
+    private:
+        QPixmap findPixmap(const QString &name, const QString &path);
+        QPixmap applyOverlay(const QPixmap &pixmap, const QPixmap &overlay);
+        void fillMenu(QMenu &menu, const QDBusMenuLayoutItem &item);
 
-  private:
-    QTimer fetchTimer;
-    OrgKdeStatusNotifierItem *dbus;
-    QString menuPath;
+    private:
+        QTimer fetchTimer;
+        OrgKdeStatusNotifierItem *dbus;
+        QString menuPath;
 };
 
 #endif

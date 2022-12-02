@@ -27,22 +27,22 @@ class DesktopPanel : public QFrame {
     Q_OBJECT
 
     public:
-    DesktopPanel(QWidget *parent);
-    int getRows() const { return rows; }
+        DesktopPanel(QWidget *parent);
+        int getRows() const { return rows; }
 
-    Q_SIGNALS:
-    void resized();
-    void rowsChanged(int rows);
+        Q_SIGNALS:
+        void resized();
+        void rowsChanged(int rows);
 
     protected:
-    bool event(QEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+        bool event(QEvent *event) override;
+        void resizeEvent(QResizeEvent *event) override;
 
     private Q_SLOTS:
-    void updateRowCount();
+        void updateRowCount();
 
     private:
-    int rows = 2;
+        int rows = 2;
 };
 
 #endif

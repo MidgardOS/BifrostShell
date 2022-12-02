@@ -26,19 +26,18 @@
 
 #include <kwindowinfo.h>
 
-class TaskBar : public QWidget
-{
-  Q_OBJECT
+class TaskBar : public QWidget {
+    Q_OBJECT
 
-  public:
-    TaskBar(DesktopPanel *parent);
+    public:
+        TaskBar(DesktopPanel *parent);
 
-  private Q_SLOTS:
-    void fill();
-    void windowChanged(WId wid, NET::Properties props, NET::Properties2 props2);
+    private Q_SLOTS:
+        void fill();
+        void windowChanged(WId wid, NET::Properties props, NET::Properties2 props2);
 
-  private:
-    QGridLayout *grid;
+    private:
+        QGridLayout *grid;
 };
 
 #endif

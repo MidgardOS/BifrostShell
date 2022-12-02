@@ -23,23 +23,23 @@
 
 #include <QProgressBar>
 #include <QTimer>
+
 class QDBusMessage;
 class QDBusError;
 
-class OnScreenBrightness : public QProgressBar
-{
-  Q_OBJECT
+class OnScreenBrightness : public QProgressBar {
+    Q_OBJECT
 
-  public:
-    OnScreenBrightness(QWidget *parent);
+    public:
+        OnScreenBrightness(QWidget *parent);
 
-  private Q_SLOTS:
-    void gotBrightnessMax(QDBusMessage msg);
-    void brightnessMaxChanged(int value);
-    void brightnessChanged(int value);
+    private Q_SLOTS:
+        void gotBrightnessMax(QDBusMessage msg);
+        void brightnessMaxChanged(int value);
+        void brightnessChanged(int value);
 
-  private:
-    QTimer hideTimer;
+    private:
+        QTimer hideTimer;
 };
 
 #endif

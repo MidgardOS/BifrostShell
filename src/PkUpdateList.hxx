@@ -25,6 +25,7 @@
 #include <QScrollArea>
 #include <QQueue>
 #include <QPointer>
+
 class QCheckBox;
 class QProgressBar;
 class QVBoxLayout;
@@ -33,90 +34,88 @@ class QPushButton;
 class QLabel;
 class QLineEdit;
 
-class PkUpdateList : public QWidget
-{
-  Q_OBJECT
+class PkUpdateList : public QWidget {
+    Q_OBJECT
 
-  public:
-    PkUpdateList(QWidget *parent);
+    public:
+        PkUpdateList(QWidget *parent);
 
-    void setPackages(const PkUpdates::PackageList &packages);
-    void setRefreshProgress(int progress);
+        void setPackages(const PkUpdates::PackageList &packages);
+        void setRefreshProgress(int progress);
 
-    bool isInstallInProgress() const { return !installQ.isEmpty(); }
+        bool isInstallInProgress() const { return !installQ.isEmpty(); }
 
-    QSize sizeHint() const override;
+        QSize sizeHint() const override;
 
-  protected:
-    void hideEvent(QHideEvent *event) override;
+    protected:
+        void hideEvent(QHideEvent *event) override;
 
-  Q_SIGNALS:
-    void refreshRequested();
-    void packageInstalled(QString id);
-    void packageCountToInstall(int num);
+    Q_SIGNALS:
+        void refreshRequested();
+        void packageInstalled(QString id);
+        void packageCountToInstall(int num);
 
-  private Q_SLOTS:
-    void checkAll(bool on);
-    void install();
-    void installOne();
-    void countChecked();
-    void filterChanged(const QString &text);
+    private Q_SLOTS:
+        void checkAll(bool on);
+        void install();
+        void installOne();
+        void countChecked();
+        void filterChanged(const QString &text);
 
-  private:
-    QVBoxLayout *vbox;
-    QScrollArea *scrollArea;
-    QVBoxLayout *itemsLayout;
-    QLineEdit *filterEdit;
-    QProgressBar *progressBar;
-    QPushButton *installButton;
-    QPushButton *refreshButton;
-    QCheckBox *checkAllBox;
-    QSize savedSize;
+    private:
+        QVBoxLayout *vbox;
+        QScrollArea *scrollArea;
+        QVBoxLayout *itemsLayout;
+        QLineEdit *filterEdit;
+        QProgressBar *progressBar;
+        QPushButton *installButton;
+        QPushButton *refreshButton;
+        QCheckBox *checkAllBox;
+        QSize savedSize;
 
-    QQueue<QPointer<class PkUpdateListItem>> installQ;
-    QPointer<PackageKit::Transaction> transaction;
-    bool packageNoLongerAvailable;
+        QQueue<QPointer<class PkUpdateListItem>> installQ;
+        QPointer<PackageKit::Transaction> transaction;
+        bool packageNoLongerAvailable;
 
-    PackageKit::Transaction::Restart restart;
+        PackageKit::Transaction::Restart restart;
 };
 
 //--------------------------------------------------------------------------------
 
-class PkUpdateListItem : public QWidget
-{
-  Q_OBJECT
+class PkUpdateListItem : public QWidget {
+    Q_OBJECT
 
-  public:
-    PkUpdateListItem(QWidget *parent, PackageKit::Transaction::Info info, const PkUpdates::PackageData &data);
+    public:
+        PkUpdateListItem(QWidget *parent, PackageKit::Transaction::Info info, const PkUpdates::PackageData &data);
 
-    void showProgress(bool yes);
+        void showProgress(bool yes);
 
-    PkUpdates::PackageData package;
-    QToolButton *label;
-    QCheckBox *checkBox;
-    QProgressBar *progress;
-    QLabel *detailsLabel;
-    QLabel *errorLabel;
-    QLabel *packageLabel;
+        PkUpdates::PackageData package;
+        QToolButton *label;
+        QCheckBox *checkBox;
+        QProgressBar *progress;
+        QLabel *detailsLabel;
+        QLabel *errorLabel;
+        QLabel *packageLabel;
 
-  Q_SIGNALS:
-    void toggled();
+        Q_SIGNALS:
+        void toggled();
 
-  private Q_SLOTS:
-    void getUpdateDetails();
+    private Q_SLOTS:
+        void getUpdateDetails();
 
-    void updateDetail(const QString &packageID,
-                      const QStringList &updates,
-                      const QStringList &obsoletes,
-                      const QStringList &vendorUrls,
-                      const QStringList &bugzillaUrls,
-                      const QStringList &cveUrls,
-                      PackageKit::Transaction::Restart restart,
-                      const QString &updateText,
-                      const QString &changelog,
-                      PackageKit::Transaction::UpdateState state,
-                      const QDateTime &issued,
-                      const QDateTime &updated);
+        void updateDetail(const QString &packageID,
+                          const QStringList &updates,
+                          const QStringList &obsoletes,
+                          const QStringList &vendorUrls,
+                          const QStringList &bugzillaUrls,
+                          const QStringList &cveUrls,
+                          PackageKit::Transaction::Restart restart,
+                          const QString &updateText,
+                          const QString &changelog,
+                          PackageKit::Transaction::UpdateState state,
+                          const QDateTime &issued,
+                          const QDateTime &updated);
 };
 
 #endif

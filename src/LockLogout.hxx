@@ -30,13 +30,13 @@ class LockLogout : public QWidget {
     Q_OBJECT
 
     public:
-    LockLogout(DesktopPanel *parent);
+        LockLogout(DesktopPanel *parent);
 
     private Q_SLOTS:
-    void fill(int rows);
+        void fill(int rows);
 
     private:
-    QToolButton *lock, *logout;
+        QToolButton *lock, *logout;
 };
 
 #endif

@@ -54,30 +54,30 @@ class DeviceItem : public QFrame {
     Q_OBJECT
 
     public:
-    DeviceItem(Solid::Device dev, const QVector<DeviceAction> &deviceActions);
-    DeviceItem(const KdeConnect::Device &dev);
-    void markAsNew();
+        DeviceItem(Solid::Device dev, const QVector<DeviceAction> &deviceActions);
+        DeviceItem(const KdeConnect::Device &dev);
+        void markAsNew();
 
     private:
-    static QString errorToString(Solid::ErrorType error);
-    void fillData();
-    void kdeConnectDeviceChanged(const KdeConnect::Device &dev);
-    enum Action { Mount, Unmount };
-    void mountDone(Action action, Solid::ErrorType error, QVariant errorData, const QString &udi);
+        static QString errorToString(Solid::ErrorType error);
+        void fillData();
+        void kdeConnectDeviceChanged(const KdeConnect::Device &dev);
+        enum Action { Mount, Unmount };
+        void mountDone(Action action, Solid::ErrorType error, QVariant errorData, const QString &udi);
 
     private Q_SLOTS:
-    void teardownDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
-    void setupDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
+        void teardownDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
+        void setupDone(Solid::ErrorType error, QVariant errorData, const QString &udi);
 
     private:
-    Solid::Device device;
-    QToolButton *mountButton = nullptr;
-    QLabel *textLabel = nullptr, *statusLabel = nullptr, *newFlagLabel = nullptr;
-    QLabel *chargeIcon = nullptr;
-    QToolButton *ringButton = nullptr;
-    QTimer statusTimer, mountBusyTimer;
-    QPointer<KCMultiDialog> dialog;
-    QString pendingCommand;  // used when click -> mount -> action
+        Solid::Device device;
+        QToolButton *mountButton = nullptr;
+        QLabel *textLabel = nullptr, *statusLabel = nullptr, *newFlagLabel = nullptr;
+        QLabel *chargeIcon = nullptr;
+        QToolButton *ringButton = nullptr;
+        QTimer statusTimer, mountBusyTimer;
+        QPointer<KCMultiDialog> dialog;
+        QString pendingCommand;  // used when click -> mount -> action
 };
 
 //--------------------------------------------------------------------------------
@@ -86,29 +86,29 @@ class DeviceList : public QScrollArea {
     Q_OBJECT
 
     public:
-    DeviceList(QWidget *parent);
-    bool isEmpty() const { return items.isEmpty(); }
-    QSize sizeHint() const override;
+        DeviceList(QWidget *parent);
+        bool isEmpty() const { return items.isEmpty(); }
+        QSize sizeHint() const override;
 
-    Q_SIGNALS:
-    void deviceWasAdded();
-    void deviceWasRemoved();
+        Q_SIGNALS:
+        void deviceWasAdded();
+        void deviceWasRemoved();
 
     private Q_SLOTS:
-    void deviceAdded(const QString &dev);
-    void deviceRemoved(const QString &dev);
-    void kdeConnectDeviceAdded(const KdeConnect::Device &dev);
+        void deviceAdded(const QString &dev);
+        void deviceRemoved(const QString &dev);
+        void kdeConnectDeviceAdded(const KdeConnect::Device &dev);
 
     private:
-    void loadActions();
-    DeviceItem *addDevice(Solid::Device device);
+        void loadActions();
+        DeviceItem *addDevice(Solid::Device device);
 
     private:
-    QVBoxLayout *vbox;
-    QMap<QString, DeviceItem *> items;
-    Solid::Predicate predicate;
-    QVector<DeviceAction> actions;
-    KdeConnect kdeConnect;
+        QVBoxLayout *vbox;
+        QMap<QString, DeviceItem *> items;
+        Solid::Predicate predicate;
+        QVector<DeviceAction> actions;
+        KdeConnect kdeConnect;
 };
 
 #endif

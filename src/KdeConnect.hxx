@@ -38,29 +38,29 @@ class KdeConnectDevice : public QObject {
     Q_OBJECT
 
     Q_SIGNALS:
-    void changed();
+        void changed();
 
     public Q_SLOTS:
-    void updatePlugins();
+        void updatePlugins();
 
     public:
-    void ringPhone();
+        void ringPhone();
 
-    QString id;
-    QString name;
-    QIcon icon, chargeIcon;
-    QStringList plugins;
-    int charge = -1;
-    bool isCharging = false;
-    bool warned = false;
-    QDBusInterface *batteryInterface = nullptr;
+        QString id;
+        QString name;
+        QIcon icon, chargeIcon;
+        QStringList plugins;
+        int charge = -1;
+        bool isCharging = false;
+        bool warned = false;
+        QDBusInterface *batteryInterface = nullptr;
 
     private Q_SLOTS:
-    void nameChangedSlot(const QString &newName);
-    void chargeChangedSlot();
+        void nameChangedSlot(const QString &newName);
+        void chargeChangedSlot();
 
     private:
-    QPointer<KNotification> notif;
+        QPointer<KNotification> notif;
 };
 
 //--------------------------------------------------------------------------------
@@ -69,25 +69,25 @@ class KdeConnect : public QObject {
     Q_OBJECT
 
     public:
-    KdeConnect();
+        KdeConnect();
 
     struct Device : public QSharedPointer<KdeConnectDevice> {
         Device() : QSharedPointer(new KdeConnectDevice) {}
     };
 
     Q_SIGNALS:
-    void deviceAdded(const Device &device);
-    void deviceRemoved(const QString &devId);
+        void deviceAdded(const Device &device);
+        void deviceRemoved(const QString &devId);
 
     private Q_SLOTS:
-    void getDevices();
-    void gotDevices(const QDBusMessage &msg);
-    void deviceAddedSlot(const QString &dev);
-    void deviceRemovedSlot(const QString &dev);
-    void deviceVisibilityChanged(const QString &dev, bool visible);
+        void getDevices();
+        void gotDevices(const QDBusMessage &msg);
+        void deviceAddedSlot(const QString &dev);
+        void deviceRemovedSlot(const QString &dev);
+        void deviceVisibilityChanged(const QString &dev, bool visible);
 
     private:
-    QMap<QString, Device> devices;
+        QMap<QString, Device> devices;
 };
 
 #endif

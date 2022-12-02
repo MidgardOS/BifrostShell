@@ -34,17 +34,17 @@ class NotifyItem : public QFrame {
     Q_OBJECT
 
     public:
-    NotifyItem(QWidget *parent, uint theid, const QString &app,
-               const QString &summary, const QString &body, const QIcon &icon,
-               const QStringList &actions);
-    void destroySysResources();
-    void setTimeout(int milliSecs);
+        NotifyItem(QWidget *parent, uint theid, const QString &app,
+                   const QString &summary, const QString &body, const QIcon &icon,
+                   const QStringList &actions);
+        void destroySysResources();
+        void setTimeout(int milliSecs);
 
-    uint id;
-    QString appName, summary, body;
-    QStringList actions;
-    QLabel *timeLabel, *iconLabel, *textLabel;
-    QProgressBar *timeoutBar;
+        uint id;
+        QString appName, summary, body;
+        QStringList actions;
+        QLabel *timeLabel, *iconLabel, *textLabel;
+        QProgressBar *timeoutBar;
 };
 
 //--------------------------------------------------------------------------------
@@ -53,29 +53,29 @@ class NotificationList : public QWidget {
     Q_OBJECT
 
     public:
-    NotificationList(QWidget *parent);
-    ~NotificationList() override;
-    void addItem(uint id, const QString &appName, const QString &summary, const QString &body,
-                 const QIcon &icon, const QStringList &actions, const QVariantMap &hints, int timeout);
-    void closeItem(uint id);
-    int itemCount() const { return items.count(); }
-    QVector<NotifyItem *> getItems() const { return items; }
+        NotificationList(QWidget *parent);
+        ~NotificationList() override;
+        void addItem(uint id, const QString &appName, const QString &summary, const QString &body,
+                     const QIcon &icon, const QStringList &actions, const QVariantMap &hints, int timeout);
+        void closeItem(uint id);
+        int itemCount() const { return items.count(); }
+        QVector<NotifyItem *> getItems() const { return items; }
 
     Q_SIGNALS:
-    void itemsCountChanged();
-    void listNowEmpty();
+        void itemsCountChanged();
+        void listNowEmpty();
 
     private Q_SLOTS:
-    void itemDestroyed(QObject *item);
+        void itemDestroyed(QObject *item);
 
     private:
-    void placeItems();
+        void placeItems();
 
     private:
-    QScrollArea *scrollArea;
-    QVBoxLayout *listVbox;
-    QMap<QString, int> appTimeouts;  // appName, timeout (minutes)
-    QVector<NotifyItem *> items;
+        QScrollArea *scrollArea;
+        QVBoxLayout *listVbox;
+        QMap<QString, int> appTimeouts;  // appName, timeout (minutes)
+        QVector<NotifyItem *> items;
 };
 
 #endif

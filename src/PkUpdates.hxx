@@ -30,46 +30,45 @@
 #include <QMultiMap>
 #include <QTimer>
 #include <QDateTime>
+
 class PkUpdateList;
 
-class PkUpdates : public SysTrayItem
-{
-  Q_OBJECT
+class PkUpdates : public SysTrayItem {
+    Q_OBJECT
 
-  public:
-    PkUpdates(QWidget *parent);
+    public:
+        PkUpdates(QWidget *parent);
 
-    struct PackageData
-    {
-      QString id;
-      QString summary;
-    };
-    typedef QMultiMap<PackageKit::Transaction::Info, PackageData> PackageList;
+        struct PackageData {
+            QString id;
+            QString summary;
+        };
+        typedef QMultiMap<PackageKit::Transaction::Info, PackageData> PackageList;
 
-  protected:
-    QWidget *getDetailsList() override;
+    protected:
+        QWidget *getDetailsList() override;
 
-  private Q_SLOTS:
-    void checkForUpdatesReached();
-    void checkForUpdates();
-    void refreshFinished(PackageKit::Transaction::Exit status, uint runtime);
-    void package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
-    void transactionError(PackageKit::Transaction::Error error, const QString &details);
-    void packageInstalled(const QString &id);
-    void packageCountToInstallChanged(int num);
+    private Q_SLOTS:
+        void checkForUpdatesReached();
+        void checkForUpdates();
+        void refreshFinished(PackageKit::Transaction::Exit status, uint runtime);
+        void package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
+        void transactionError(PackageKit::Transaction::Error error, const QString &details);
+        void packageInstalled(const QString &id);
+        void packageCountToInstallChanged(int num);
 
-  private:
-    void addItems(QString &tooltip, const QList<PackageData> &list) const;
-    void createToolTip(bool notify = false);
-    void setRefreshProgress(int progress);
+    private:
+        void addItems(QString &tooltip, const QList<PackageData> &list) const;
+        void createToolTip(bool notify = false);
+        void setRefreshProgress(int progress);
 
-  private:
-    PackageList packages;
-    QTimer updateTimer;
-    QDateTime nextCheck;
-    PkUpdateList *updateList = nullptr;
-    int refreshProgress = 100;
-    QPixmap currentPixmap;
+    private:
+        PackageList packages;
+        QTimer updateTimer;
+        QDateTime nextCheck;
+        PkUpdateList *updateList = nullptr;
+        int refreshProgress = 100;
+        QPixmap currentPixmap;
 };
 
 #endif

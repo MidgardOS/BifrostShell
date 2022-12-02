@@ -28,20 +28,20 @@ class Launcher : public QWidget {
     Q_OBJECT
 
     public:
-    Launcher(QWidget *parent, const QString &theId);
+        Launcher(QWidget *parent, const QString &theId);
 
     protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
-    void loadConfig(const QString &defaultDir = QString());
-    void setDir(const QString &theDirPath);
+        void contextMenuEvent(QContextMenuEvent *event) override;
+        void loadConfig(const QString &defaultDir = QString());
+        void setDir(const QString &theDirPath);
 
     private Q_SLOTS:
-    virtual void fill() = 0;
+        virtual void fill() = 0;
 
     protected:
-    QString id;
-    QString dirPath;
-    QFileSystemWatcher dirWatcher;
+        QString id;
+        QString dirPath;
+        QFileSystemWatcher dirWatcher;
 };
 
 #endif
